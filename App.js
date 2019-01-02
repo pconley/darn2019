@@ -8,8 +8,10 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image} from 'react-native';
-import { TextInput, Alert, Button, ScrollView } from 'react-native';
+import { TextInput, Alert, ScrollView } from 'react-native';
 import { FlatList, SectionList, ActivityIndicator } from 'react-native';
+
+import { Button } from 'react-native-elements'
 
 import Blink from './components/Blink'
 import CounterButton from './components/CounterButton'
@@ -85,7 +87,19 @@ export default class App extends Component<Props> {
 
     return(
       <View style={{flex: 1, paddingTop:200, flexDirection: 'column'}}>
+        
+        <Button title='Red Refresh'
+            icon={{name: 'cached'}}
+            backgroundColor='red'
+        />
+
+        <Button
+          title="Loading" loading 
+          buttonStyle={styles.buttonStyle}
+        />
+
         {titles}
+
       </View>
 
       // <FlatList data={this.state.dataSource} style={{paddingTop: 200}}
@@ -116,6 +130,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
   },
+  buttonStyle: {
+    backgroundColor: "rgba(92, 99,216, 1)",
+    width: 300,
+    height: 45,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5
+  }
 })
 
 // const styles2 = StyleSheet.create({

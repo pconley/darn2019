@@ -3,6 +3,9 @@ import { StyleSheet, Alert, View, Text } from 'react-native';
 
 import { TouchableHighlight } from 'react-native';
 
+import { Button } from 'react-native-elements'
+
+
 export default class CounterButton extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +24,7 @@ export default class CounterButton extends Component {
     this.setState({ count: 0 });
   }
 
-  render() {
+  xrender() {
     console.log("counter button props...",this.props)
     return (
 <TouchableHighlight key={this.props.id} onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="white">
@@ -31,6 +34,19 @@ export default class CounterButton extends Component {
 </TouchableHighlight>
     );
   }
+
+  render() {
+    return (
+      <Button title={this.state.count} 
+          key={this.props.id} 
+          onPress={this._onPressButton} 
+          onLongPress={this._onLongPressButton}
+          buttonStyle={styles.buttonStyle}
+      />
+    );
+  }
+
+
 }
 
 const styles = StyleSheet.create({
@@ -40,5 +56,13 @@ const styles = StyleSheet.create({
         height: 20,
         backgroundColor : "grey",
     },
-    buttonText: { color: "black" }
+    buttonText: { color: "black" },
+    buttonStyle: {
+      backgroundColor: "rgba(92, 99, 216, 1)",
+      width: 50,
+      height: 45,
+      borderColor: "transparent",
+      borderWidth: 0,
+      borderRadius: 5
+    }
   })
