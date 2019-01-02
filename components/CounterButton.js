@@ -22,8 +22,9 @@ export default class CounterButton extends Component {
   }
 
   render() {
+    console.log("counter button props...",this.props)
     return (
-<TouchableHighlight onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="white">
+<TouchableHighlight key={this.props.id} onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="white">
   <View style={styles.button}>
     <Text style={styles.buttonText}>{this.state.count}</Text>
   </View>
@@ -35,7 +36,8 @@ export default class CounterButton extends Component {
 const styles = StyleSheet.create({
     button: {
         margin: 5,
-        width: 100,
+        width: 50,
+        height: 20,
         backgroundColor : "grey",
     },
     buttonText: { color: "black" }

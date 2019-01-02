@@ -11,8 +11,6 @@ import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 import { TextInput, Alert, Button, ScrollView } from 'react-native';
 import { FlatList, SectionList, ActivityIndicator } from 'react-native';
 
-import { TouchableHighlight, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native';
-
 import Blink from './components/Blink'
 import CounterButton from './components/CounterButton'
 
@@ -73,20 +71,29 @@ export default class App extends Component<Props> {
     var titles = [];
     this.state.dataSource.forEach(function(el) {
       titles.push(
-        <View>
+        <View key={el.id} style={{height: 30, flex: 1, flexDirection: 'row' }}>
           <CounterButton />
-          <Text key={el.id}>{el.title}</Text>
+          <Text>{el.title}</Text>
         </View>
       )
       console.log(el);
     });
 
+    console.log(this.state.dataSource)
+
+    // _keyExtractor = (item, index) => item.id;
+
     return(
       <View style={{flex: 1, paddingTop:200, flexDirection: 'column'}}>
         {titles}
       </View>
-    );
 
+      // <FlatList data={this.state.dataSource} style={{paddingTop: 200}}
+      //     renderItem={({item}) => 
+      //         <Text key={item.id}>{item.id} == {item.title}</Text>
+      //     }
+      // ></FlatList>
+    );
   }
 }
 
