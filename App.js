@@ -11,7 +11,7 @@ import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 import { TextInput, Alert, ScrollView } from 'react-native';
 import { FlatList, SectionList, ActivityIndicator } from 'react-native';
 
-import { Button } from 'react-native-elements'
+import { Button, Header } from 'react-native-elements'
 
 import Blink from './components/Blink'
 import CounterButton from './components/CounterButton'
@@ -34,13 +34,6 @@ export default class App extends Component<Props> {
     // this._onPressButton = this._onPressButton.bind(this);
 
 
-  }
-  _onPressButton() {
-    Alert.alert('You tapped the button!');
-    // this.setState({ counter: counter});
-  }
-  _onLongPressButton() {
-    Alert.alert('You long-pressed the button!')
   }
 
   componentDidMount(){
@@ -70,46 +63,49 @@ export default class App extends Component<Props> {
         </View>
       )
     }
-    var titles = [];
-    this.state.dataSource.forEach(function(el) {
-      titles.push(
-        <View key={el.id} style={{height: 30, flex: 1, flexDirection: 'row' }}>
-          <CounterButton />
-          <Text>{el.title}</Text>
+
+    var titles = 
+        <View style={{paddingTop:80}}>
+          <FlatList data={this.state.dataSource}
+              renderItem={({item}) => 
+                <View key={item.id} style={{height: 60, flex: 1, flexDirection: 'row' }}>
+                <CounterButton id={item.id} />
+                <Text key={item.id}>{item.title}</Text>
+                </View>
+              }
+              keyExtractor={(item, index) => String(item.id)}
+          ></FlatList>
         </View>
-      )
-      console.log(el);
-    });
 
     console.log(this.state.dataSource)
 
-    // _keyExtractor = (item, index) => item.id;
-
     return(
-      <View style={{flex: 1, paddingTop:200, flexDirection: 'column'}}>
-        
-        <Button title='Red Refresh'
-            icon={{name: 'cached'}}
-            backgroundColor='red'
+      <View style={{ paddingTop:100 }}>
+        <Header
+          leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ text: 'Oh Darn!', style: { color: '#fff' } }}
+          rightComponent={{ icon: 'home', color: '#fff' }}
         />
-
-        <Button
-          title="Loading" loading 
-          buttonStyle={styles.buttonStyle}
-        />
-
+        <View key='buttons' style={{height: 100, flex: 1, flexDirection: 'row' }}>
+            <Button title='Red Refresh'
+                icon={{name: 'cached'}}
+                buttonStyle={styles.buttonStyle}
+                backgroundColor='red'
+            />
+            <Button
+              title="Loading" loading 
+              buttonStyle={styles.buttonStyle}
+              backgroundColor="rgba(92, 99,216, 1)"
+            />
+        </View>
         {titles}
-
       </View>
 
-      // <FlatList data={this.state.dataSource} style={{paddingTop: 200}}
-      //     renderItem={({item}) => 
-      //         <Text key={item.id}>{item.id} == {item.title}</Text>
-      //     }
-      // ></FlatList>
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -131,8 +127,8 @@ const styles = StyleSheet.create({
     height: 44,
   },
   buttonStyle: {
-    backgroundColor: "rgba(92, 99,216, 1)",
-    width: 300,
+    // backgroundColor: "rgba(92, 99,216, 1)",
+    width: 150,
     height: 45,
     borderColor: "transparent",
     borderWidth: 0,
