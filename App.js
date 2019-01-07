@@ -7,9 +7,12 @@
  */
 
 import React, {Component} from 'react';
+// import update from 'immutability-helper';
 import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 import { TextInput, Alert, ScrollView } from 'react-native';
 import { FlatList, SectionList, ActivityIndicator } from 'react-native';
+
+import update from 'immutability-helper';
 
 import { Button, Header } from 'react-native-elements'
 
@@ -29,11 +32,40 @@ export default class App extends Component<Props> {
     super(props);
     this.state = {
       text: '',
-      isLoading: true
+      isLoading: true,
+      total: 10,
+      counters: [
+        {id:1, value:0, title:'pat'},
+        {id:2, value:0, title:'mj'},
+        {id:3, value:0, title:'claire'},
+        {id:4, value:0, title:'ted'},
+        {id:5, value:0, title:'tim'},
+      ]
     };
-    // this._onPressButton = this._onPressButton.bind(this);
+  }
 
+  _setValue = (counter, newval) => {
+    const changed = update(counter,{value: {$set: newval}})
+    const index = this.state.counters.findIndex( c => c.id === counter.id );
+    const counters = update(this.state.counters, {[index]: { $set: changed }})
+    const total = counters.reduce((sum,x) => sum+x.value, 0 )
+    this.setState({ total: total, counters: counters });
+  }
 
+  _handleIncrement = (counter) => {
+    const newval = counter.value+1
+    this._setValue(counter,newval)
+  }
+
+  _handleDecrement = (counter) => {
+    const newval = Math.max(0,counter.value-1)
+    this._setValue(counter,newval)
+  }
+
+  _clearValue = (counter) => {
+    if (this.state.count === 0) return;
+    Alert.alert('You reset the counter!')
+    this._setValue(counter,0)
   }
 
   componentDidMount(){
@@ -66,10 +98,14 @@ export default class App extends Component<Props> {
 
     var titles = 
         <View style={{paddingTop:80}}>
-          <FlatList data={this.state.dataSource}
+          <FlatList data={this.state.counters}
               renderItem={({item}) => 
                 <View key={item.id} style={{height: 60, flex: 1, flexDirection: 'row' }}>
-                <CounterButton id={item.id} />
+                <CounterButton counter={item}
+                  onIncrement={this._handleIncrement} 
+                  onDecrement={this._handleDecrement} 
+                  onLongPress={this._clearValue}
+                />
                 <Text key={item.id}>{item.title}</Text>
                 </View>
               }
@@ -98,6 +134,7 @@ export default class App extends Component<Props> {
               backgroundColor="rgba(92, 99,216, 1)"
             />
         </View>
+        <Text>{this.state.total}</Text>
         {titles}
       </View>
 
