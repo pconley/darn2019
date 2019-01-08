@@ -1,13 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-// import update from 'immutability-helper';
 import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 import { TextInput, Alert, ScrollView } from 'react-native';
 import { FlatList, SectionList, ActivityIndicator } from 'react-native';
@@ -18,9 +9,7 @@ import { Button, Header } from 'react-native-elements'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
 });
 
 export default class App extends Component {
@@ -31,6 +20,7 @@ export default class App extends Component {
       isLoading: true,
       total_bid: 0,
       hand_size: 7,
+      dealer_id: 3,
       players: [
         {id:1, bid:0, name:'pat'},
         {id:2, bid:0, name:'mj'},
@@ -69,6 +59,11 @@ export default class App extends Component {
     const bad = this.state.hand_size - this.state.total_bid;
     if( bad < 0 ) return "can bid anything."
     return "can't bid "+bad;
+  }
+
+  _getDealerName = () => {
+    const index = this.state.players.findIndex( c => c.id === this.state.dealer_id );
+    return this.state.players[index].name;
   }
 
   componentDidMount(){
@@ -119,26 +114,29 @@ export default class App extends Component {
         />
       </View>
 
-    var player_rows = 
+    const player_rows = 
         <View style={{paddingTop:20}}>
           <FlatList data={this.state.players}
               renderItem={({item}) => 
 
                 <View key={item.id} style={styles.playerRow}>
-                  <Button title={String(item.bid)} buttonStyle={styles.bidButtonStyle} />
                   <Button title='<'
                           onPress={() => this._handleDecrement(item)} 
                           onLongPress={() => this._clearbid(item)}
                           buttonStyle={styles.counterButtonStyle}
-                          containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
+                          containerViewStyle={{ marginLeft: 5, marginRight: 0 }}
                       />
+                  <Button title={String(item.bid)} 
+                      buttonStyle={styles.bidButtonStyle} 
+                      containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
+                  />
                   <Button title='>' 
                           onPress={() => this._handleIncrement(item)} 
                           onLongPress={() => this._clearbid(item)}
                           buttonStyle={styles.counterButtonStyle}
-                          containerViewStyle={{ marginLeft: 5, marginRight: 10 }}
+                          containerViewStyle={{ marginLeft: 0, marginRight: 10 }}
                       />
-                  <Text style={{flex: 4}}>{item.name}</Text>
+                  <Text style={styles.playerName}>{item.name}</Text>
                 </View>
               }
               keyExtractor={(item, index) => String(item.id)}
@@ -151,19 +149,18 @@ export default class App extends Component {
         <Text style={styles.topline}>Players: {this.state.players.length}</Text>
         <Text style={styles.topline}>Stage: {this.state.stage}</Text>
         <Text style={styles.topline}>Total Bid: {this.state.total_bid} of {this.state.hand_size}</Text>
-        <Text style={styles.topline}>Dealer {this._getDealerMessage()}</Text>
+        <Text style={[styles.topline, styles.red]}>Dealer [{this._getDealerName()}] {this._getDealerMessage()}</Text>
         {player_rows}
         {sample_buttons}
-        <Text style={{paddingTop: 60}}>{instructions}</Text>
+        <Text style={styles.instructions}>{instructions}</Text>
       </View>
     );
   }
 }
 
-
-
 const styles = StyleSheet.create({
   playerRow: {height: 60, flex: 1, flexDirection: 'row' },
+  playerName: { fontWeight: 'bold', fontSize: 30 },
   topline: {
     paddingTop: 2,
     paddingLeft: 10,
@@ -197,64 +194,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 5
   },
+  instructions: {
+    paddingTop: 80,
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  blue: {
+    color: 'blue',
+  },
+  red: {
+    color: 'red',
+  },
 })
-
-// const styles2 = StyleSheet.create({
-//   container: {
-//    flex: 1,
-//    justifyContent: 'center',
-//    backgroundColor : "grey"
-//   },
-//   buttonContainer: {
-//     margin: 20,
-//     backgroundColor : "white"
-//   },
-//   button: {
-//     margin: 20,
-//     backgroundColor : "white"
-//   },
-//   alternativeLayoutButtonContainer: {
-//     margin: 20,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     backgroundColor : "white"
-//   }
-// });
-
-// const xstyles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     // alignItems: 'center',
-//     // backgroundColor: '#F5FCFF',
-//   },
-//   welcome: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     margin: 10,
-//   },
-//   instructions: {
-//     textAlign: 'center',
-//     color: '#333333',
-//     marginBottom: 5,
-//   },
-//   big: {
-//     fontWeight: 'bold',
-//     fontSize: 30,
-//   },
-//   blue: {
-//     color: 'blue',
-//   },
-//   red: {
-//     color: 'red',
-//   },
-//   buttonContainer: {
-//     margin: 20
-//   },
-//   alternativeLayoutButtonContainer: {
-//     margin: 20,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between'
-//   }
-// });
-
