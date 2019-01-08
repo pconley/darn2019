@@ -23,16 +23,15 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       stage: 'Bidding',
       isLoading: true,
       total_bid: 0,
-      hand_size: 5,
-      counters: [
+      hand_size: 7,
+      players: [
         {id:1, bid:0, name:'pat'},
         {id:2, bid:0, name:'mj'},
         {id:3, bid:0, name:'claire'},
@@ -42,28 +41,34 @@ export default class App extends Component<Props> {
     };
   }
 
-  _setbid = (counter, newval) => {
-    const changed = update(counter,{bid: {$set: newval}})
-    const index = this.state.counters.findIndex( c => c.id === counter.id );
-    const counters = update(this.state.counters, {[index]: { $set: changed }})
-    const total_bid = counters.reduce((sum,x) => sum+x.bid, 0 )
-    this.setState({ total_bid: total_bid, counters: counters });
+  _setbid = (player, value) => {
+    const changed = update(player,{bid: {$set: value}})
+    const index = this.state.players.findIndex( c => c.id === player.id );
+    const players = update(this.state.players, {[index]: { $set: changed }})
+    const total_bid = players.reduce((sum,x) => sum+x.bid, 0 )
+    this.setState({ total_bid: total_bid, players: players });
   }
 
-  _handleIncrement = (counter) => {
-    const newval = counter.bid+1
-    this._setbid(counter,newval)
+  _handleIncrement = (player) => {
+    const newval = player.bid+1
+    this._setbid(player,newval)
   }
 
-  _handleDecrement = (counter) => {
-    const newval = Math.max(0,counter.bid-1)
-    this._setbid(counter,newval)
+  _handleDecrement = (player) => {
+    const newval = Math.max(0,player.bid-1)
+    this._setbid(player,newval)
   }
 
-  _clearbid = (counter) => {
-    if (this.state.count === 0) return;
-    Alert.alert('You reset the counter!')
-    this._setbid(counter,0)
+  _clearbid = (player) => {
+    if (player.bid === 0) return;
+    Alert.alert('You reset the bid to zero!')
+    this._setbid(player,0)
+  }
+
+  _getDealerMessage = () => { 
+    const bad = this.state.hand_size - this.state.total_bid;
+    if( bad < 0 ) return "can bid anything."
+    return "can't bid "+bad;
   }
 
   componentDidMount(){
@@ -116,21 +121,24 @@ export default class App extends Component<Props> {
 
     var player_rows = 
         <View style={{paddingTop:20}}>
-          <FlatList data={this.state.counters}
+          <FlatList data={this.state.players}
               renderItem={({item}) => 
-                <View key={item.id} style={{height: 60, flex: 1, flexDirection: 'row' }}>
+
+                <View key={item.id} style={styles.playerRow}>
                   <Button title={String(item.bid)} buttonStyle={styles.bidButtonStyle} />
                   <Button title='<'
                           onPress={() => this._handleDecrement(item)} 
                           onLongPress={() => this._clearbid(item)}
                           buttonStyle={styles.counterButtonStyle}
+                          containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
                       />
                   <Button title='>' 
                           onPress={() => this._handleIncrement(item)} 
                           onLongPress={() => this._clearbid(item)}
                           buttonStyle={styles.counterButtonStyle}
+                          containerViewStyle={{ marginLeft: 5, marginRight: 10 }}
                       />
-                  <Text>{item.name}</Text>
+                  <Text style={{flex: 4}}>{item.name}</Text>
                 </View>
               }
               keyExtractor={(item, index) => String(item.id)}
@@ -140,12 +148,14 @@ export default class App extends Component<Props> {
     return(
       <View style={{ paddingTop:40 }}>
         {sample_header}
-        <Text style={styles.sectionHeader}>Stage: {this.state.stage}</Text>
-        <Text style={styles.sectionHeader}>Total Bid: {this.state.total_bid} of {this.state.hand_size}</Text>
+        <Text style={styles.topline}>Players: {this.state.players.length}</Text>
+        <Text style={styles.topline}>Stage: {this.state.stage}</Text>
+        <Text style={styles.topline}>Total Bid: {this.state.total_bid} of {this.state.hand_size}</Text>
+        <Text style={styles.topline}>Dealer {this._getDealerMessage()}</Text>
         {player_rows}
         {sample_buttons}
+        <Text style={{paddingTop: 60}}>{instructions}</Text>
       </View>
-
     );
   }
 }
@@ -153,34 +163,19 @@ export default class App extends Component<Props> {
 
 
 const styles = StyleSheet.create({
-  container: {
-   flex: 1,
-   paddingTop: 200
-  },
-  sectionHeader: {
+  playerRow: {height: 60, flex: 1, flexDirection: 'row' },
+  topline: {
     paddingTop: 2,
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 2,
     fontSize: 14,
     fontWeight: 'bold',
-    backgroundColor: 'rgba(247,247,247,1.0)',
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+    backgroundColor: 'lightgray',
   },
   bidButtonStyle: {
     // backgroundColor: 'grey',
     width: 45,
-    height: 45,
-    borderColor: "transparent",
-    borderWidth: 0,
-    borderRadius: 5
-  },
-  bottomButtonStyle: {
-    width: 150,
     height: 45,
     borderColor: "transparent",
     borderWidth: 0,
@@ -194,7 +189,14 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
     borderRadius: 15
-  }
+  },
+  bottomButtonStyle: {
+    width: 150,
+    height: 45,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5
+  },
 })
 
 // const styles2 = StyleSheet.create({
