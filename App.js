@@ -26,9 +26,9 @@ export default class App extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      stage: PLAYING,
+      stage: STARTING,
       current_round_index: 0,
-      tricks: [5, 3, 1, 2, 4],
+      tricks: [7, 3, 1, 2, 4],
       rounds: [
         { tricks: 5,
           total_bid: 0,
@@ -36,11 +36,11 @@ export default class App extends Component {
           dealer_id: 3,
           stage: BIDDING,
           players: [
-            {id:1, bid:0, tricks:0, name:'pat'},
-            {id:2, bid:0, tricks:0, name:'mj'},
-            {id:3, bid:0, tricks:0, name:'claire'},
-            {id:4, bid:0, tricks:0, name:'ted'},
-            {id:5, bid:0, tricks:0, name:'tim'},
+            {id:1, bid:0, tricks:0, score: 0, name:'pat'},
+            {id:2, bid:0, tricks:0, score: 0, name:'mj'},
+            {id:3, bid:0, tricks:0, score: 0, name:'claire'},
+            {id:4, bid:0, tricks:0, score: 0, name:'ted'},
+            {id:5, bid:0, tricks:0, score: 0, name:'tim'},
           ]
         }
       ],
@@ -54,13 +54,17 @@ export default class App extends Component {
     };
   }
 
+  _calcScore = (bid, tricks) => { return (bid === tricks) ? bid*bid+5 : -Math.max(bid,tricks); };
+
   _setValue = (player, field, value) => {
-    console.log("set value:"+field+" = "+value);
     const total_field = 'total_'+field;
     const s_round = this.state.rounds[this.state.current_round_index];
     const player_index = s_round.players.findIndex( c => c.id === player.id );
-    const x_player = update(player,{[field]: {$set: value}});
-    const x_players = update(s_round.players, {[player_index]: { $set: x_player }});
+    const x_player = update(player,{[field]: {$set: value}, score: {$set: x_score}});
+    const {bid, tricks} = x_player;
+    const x_score = this._calcScore(bid, tricks);
+    const z_player = update(x_player,{score: {$set: x_score}});
+    const x_players = update(s_round.players, {[player_index]: { $set: z_player }});
     const x_total = x_players.reduce((sum,x) => sum+x[field], 0 );
     const x_round = update(s_round,{ [total_field]: {$set: x_total}, players: {$set: x_players} });
     const x_rounds = update(this.state.rounds,{[this.state.current_round_index]: {$set: x_round}});
@@ -68,10 +72,23 @@ export default class App extends Component {
   }
 
   _setGameStage = (stage) => {
-    console.log("set game stage: "+stage);
-    this.setState({ stage: stage });
+    if( stage === PLAYING ){
+      // we are starting a new game, so (re)init the game state based on the 
+      // values in the setup object 
+      const tricks = this.state.tricks;
+      const players = this.state.players.map((p) => ({name:p.name, id:p.id, bid:0, tricks:0, score:5 }))
+      const first_round = { tricks: tricks[0], total_bid: 0, total_tricks: 0, 
+          dealer_id: 3, stage: BIDDING,
+          players: players
+      };
+      const rounds = [first_round];
+      this.setState({ stage: stage, current_round_index: 0, rounds: rounds });
+    } else {
+      this.setState({ stage: stage });
+    }
   }
-  _setStage = (stage) => {
+
+  _setRoundStage = (stage) => {
     console.log("set stage: "+stage);
     const s_round = this.state.rounds[this.state.current_round_index];
     const x_round = update(s_round,{ stage: {$set: stage} });
@@ -164,7 +181,7 @@ export default class App extends Component {
           />
           <Button title="Start Scoring" loading 
               // disabled={true}
-              onPress={() => this._setStage(SCORING)}
+              onPress={() => this._setRoundStage(SCORING)}
               buttonStyle={styles.bottomButtonStyle}
               backgroundColor="rgba(92, 99,216, 1)"
           />
@@ -197,7 +214,7 @@ export default class App extends Component {
         onLeftPress={ (player, fld) => this._changeValue(player,fld,-1, round.tricks) }
         onRightPress={ (player, fld) => this._changeValue(player,fld,+1, round.tricks) } /> 
 
-    render_rows = () => { return (this.state.stage == BIDDING) ? bidding_rows : scoring_rows; }
+    render_rows = () => { return (round.stage === BIDDING) ? bidding_rows : scoring_rows; }
 
     return(
       <View style={{ paddingTop:40 }}>
