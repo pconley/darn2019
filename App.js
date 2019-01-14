@@ -8,8 +8,10 @@ import update from 'immutability-helper';
 import { Button, Header } from 'react-native-elements'
 
 import PlayerRows from './components/PlayerRows'
+import BiddingPage from './components/BiddingPage';
 
 // GAME Stage
+export const FORMING = "Forming";
 export const STARTING = "Starting";
 export const PLAYING = "Playing";
 // ROUND Stage
@@ -26,7 +28,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      stage: STARTING,
+      stage: PLAYING,
       current_round_index: 0,
       tricks: [7, 3, 1, 2, 4],
       rounds: [
@@ -97,7 +99,10 @@ export default class App extends Component {
   }
 
   _changeValue = (player,field,delta,maxval=52) => {
-    const newval = Math.min(maxval,Math.max(0,player[field]+delta)); 
+    console.log("app: change value ", delta);
+    // WARNING: Zero means set to zero; others are increments
+    const adjval = (delta === 0) ? -player[field] : delta;
+    const newval = Math.min(maxval,Math.max(0,player[field]+adjval)); 
     this._setValue(player,field,newval);
   }
 
@@ -137,7 +142,7 @@ export default class App extends Component {
 
   render() {
 
-    console.log("render: stage = "+this.state.stage);
+    console.log("app render: stage = "+this.state.stage);
 
     let pic = {
       uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
@@ -148,6 +153,19 @@ export default class App extends Component {
         <View style={{flex: 1, padding: 20}}>
           <ActivityIndicator/>
         </View>
+      )
+    }
+
+    if( this.state.stage === FORMING ){
+      return(
+        <View style={{paddingTop:200}}>
+          <Button
+            title="Form a Game" 
+            onPress={() => this._setGameStage(STARTING)}
+            buttonStyle={[styles.bottomButtonStyle]}
+            backgroundColor="rgba(92, 99,216, 1)"
+          />     
+        </View>  
       )
     }
 
@@ -163,12 +181,6 @@ export default class App extends Component {
         </View>  
       )
     }
-
-    const sample_header =
-      <Header leftComponent={{ icon: 'menu', color: '#fff' }}
-        centerComponent={{ text: 'Oh Darn!', style: { color: '#fff' } }}
-        rightComponent={{ icon: 'home', color: '#fff' }}
-      ></Header>
 
     game_buttons = () => { 
       return (
@@ -189,42 +201,21 @@ export default class App extends Component {
       )
     }
 
-    info_bar = () => {
-      return (
-        <View>
-          <Text style={styles.topline}>Tricks: {round.tricks}</Text>
-          <Text style={styles.topline}>Players: {round.players.length}</Text>
-          <Text style={styles.topline}>Round {this.state.current_round_index} Stage: {round.stage}</Text>
-          <Text style={styles.topline}>Total Bid: {round.total_bid} of {round.tricks}</Text>
-          <Text style={styles.topline}>Tricks Taken: {round.total_tricks} of {round.tricks}</Text>
-          <Text style={[styles.topline, styles.red]}>Dealer [{this._getDealerName()}] {this._getDealerMessage()}</Text>
-        </View>
-      )
-    }
-
     const round = this.state.rounds[this.state.current_round_index];
 
-    const bidding_rows = <PlayerRows round={round} field='bid'
-            onLongPress={ (player, fld) => this._clearValue(player,fld) }
-            onLeftPress={ (player, fld) => this._changeValue(player,fld,-1) }
-            onRightPress={ (player, fld) => this._changeValue(player,fld,+1) } /> 
+    // const scoring_rows = <PlayerRows round={round} field='tricks'
+    //     onLongPress={ (player, fld) => this._clearValue(player,fld) }
+    //     onLeftPress={ (player, fld) => this._changeValue(player,fld,-1, round.tricks) }
+    //     onRightPress={ (player, fld) => this._changeValue(player,fld,+1, round.tricks) } /> 
 
-    const scoring_rows = <PlayerRows round={round} field='tricks'
-        onLongPress={ (player, fld) => this._clearValue(player,fld) }
-        onLeftPress={ (player, fld) => this._changeValue(player,fld,-1, round.tricks) }
-        onRightPress={ (player, fld) => this._changeValue(player,fld,+1, round.tricks) } /> 
+    // render_rows = () => { return (round.stage === BIDDING) ? bidding_rows : scoring_rows; }
 
-    render_rows = () => { return (round.stage === BIDDING) ? bidding_rows : scoring_rows; }
+    if( round.stage === BIDDING ){
+      return ( <BiddingPage round={round} 
+        onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }  /> )
+    }
 
-    return(
-      <View style={{ paddingTop:40 }}>
-        {sample_header}
-        {info_bar()}
-        {render_rows()}
-        {game_buttons()}
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+    return (<Text style={{paddingTop:200}}>Error Page</Text>)
   }
 }
 
