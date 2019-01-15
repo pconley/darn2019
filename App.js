@@ -7,8 +7,9 @@ import update from 'immutability-helper';
 
 import { Button, Header } from 'react-native-elements'
 
-import PlayerRows from './components/PlayerRows'
+// import PlayerRows from './components/PlayerRows'
 import BiddingPage from './components/BiddingPage';
+import ScoringPage from './components/ScoringPage';
 
 // GAME Stage
 export const FORMING = "Forming";
@@ -38,11 +39,11 @@ export default class App extends Component {
           dealer_id: 3,
           stage: BIDDING,
           players: [
-            {id:1, bid:0, tricks:0, score: 0, name:'pat'},
-            {id:2, bid:0, tricks:0, score: 0, name:'mj'},
-            {id:3, bid:0, tricks:0, score: 0, name:'claire'},
-            {id:4, bid:0, tricks:0, score: 0, name:'ted'},
-            {id:5, bid:0, tricks:0, score: 0, name:'tim'},
+            {id:1, bid:0, tricks:0, score: 5, name:'pat'},
+            {id:2, bid:0, tricks:0, score: 5, name:'mj'},
+            {id:3, bid:0, tricks:0, score: 5, name:'claire'},
+            {id:4, bid:0, tricks:0, score: 5, name:'ted'},
+            {id:5, bid:0, tricks:0, score: 5, name:'tim'},
           ]
         }
       ],
@@ -144,10 +145,6 @@ export default class App extends Component {
 
     console.log("app render: stage = "+this.state.stage);
 
-    let pic = {
-      uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
-    };
-
     if(this.state.isLoading){
       return(
         <View style={{flex: 1, padding: 20}}>
@@ -182,25 +179,6 @@ export default class App extends Component {
       )
     }
 
-    game_buttons = () => { 
-      return (
-       <View key='buttons' style={{paddingTop:30, height: 100, flexDirection: 'row' }}>
-          <Button title='Cancel Game'
-              icon={{name: 'cached'}}
-              onPress={() => this._setGameStage(STARTING)}
-              buttonStyle={styles.bottomButtonStyle}
-              backgroundColor='red'
-          />
-          <Button title="Start Scoring" loading 
-              // disabled={true}
-              onPress={() => this._setRoundStage(SCORING)}
-              buttonStyle={styles.bottomButtonStyle}
-              backgroundColor="rgba(92, 99,216, 1)"
-          />
-        </View>
-      )
-    }
-
     const round = this.state.rounds[this.state.current_round_index];
 
     // const scoring_rows = <PlayerRows round={round} field='tricks'
@@ -212,9 +190,15 @@ export default class App extends Component {
 
     if( round.stage === BIDDING ){
       return ( <BiddingPage round={round} 
-        onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }  /> )
+        onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }
+        onChangeStage={ this._setRoundStage }
+      /> )
     }
 
+    if( round.stage === SCORING ){
+      return ( <ScoringPage round={round} 
+        onChangeValue={ (player, val) => this._changeValue(player,'tricks',val) }  /> )
+    }
     return (<Text style={{paddingTop:200}}>Error Page</Text>)
   }
 }
