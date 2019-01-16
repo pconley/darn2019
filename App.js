@@ -8,6 +8,7 @@ import update from 'immutability-helper';
 import { Button, Header } from 'react-native-elements'
 
 // import PlayerRows from './components/PlayerRows'
+import GroupPage from './components/GroupPage';
 import BiddingPage from './components/BiddingPage';
 import ScoringPage from './components/ScoringPage';
 
@@ -29,7 +30,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      stage: PLAYING,
+      stage: FORMING,
       current_round_index: 0,
       tricks: [7, 3, 1, 2, 4],
       rounds: [
@@ -48,11 +49,16 @@ export default class App extends Component {
         }
       ],
       players: [
-        {id:1, name:'pat'},
-        {id:2, name:'mj'},
-        {id:3, name:'claire'},
-        {id:4, name:'ted'},
-        {id:5, name:'tim'},
+        {id:1, checked: false, name:'pat'},
+        {id:2, checked: false, name:'mj'},
+        {id:3, checked: true, name:'claire'},
+        {id:4, checked: false, name:'ted'},
+        {id:5, checked: false, name:'tim'},
+        {id:6, checked: false, name:'jim'},
+        {id:7, checked: false, name:'jackie'},
+        {id:8, checked: false, name:'cheryl'},
+        {id:9, checked: false, name:'dani'},
+        {id:10, checked: false, name:'john'},
       ]
     };
   }
@@ -79,7 +85,15 @@ export default class App extends Component {
       // we are starting a new game, so (re)init the game state based on the 
       // values in the setup object 
       const tricks = this.state.tricks;
-      const players = this.state.players.map((p) => ({name:p.name, id:p.id, bid:0, tricks:0, score:5 }))
+      // const players = this.state.players.map((p) => ({name:p.name, id:p.id, bid:0, tricks:0, score:5 }))
+      
+      const players = this.state.players.reduce((acc, player) => {
+        if (player.checked) {
+          acc.push({name:player.name, id:player.id, bid:0, tricks:0, score:5 });
+        }
+        return acc;
+      }, []);
+      
       const first_round = { tricks: tricks[0], total_bid: 0, total_tricks: 0, 
           dealer_id: 3, stage: BIDDING,
           players: players
@@ -154,15 +168,15 @@ export default class App extends Component {
     }
 
     if( this.state.stage === FORMING ){
-      return(
-        <View style={{paddingTop:200}}>
-          <Button
-            title="Form a Game" 
-            onPress={() => this._setGameStage(STARTING)}
-            buttonStyle={[styles.bottomButtonStyle]}
-            backgroundColor="rgba(92, 99,216, 1)"
-          />     
-        </View>  
+      return( <GroupPage 
+                  players={this.state.players}
+                  onNext={(players) => { 
+                    this._setGameStage(STARTING); 
+                    console.log("players",players)
+                    this.setState({ players: players });
+                  }
+                  }
+              /> 
       )
     }
 
@@ -180,13 +194,6 @@ export default class App extends Component {
     }
 
     const round = this.state.rounds[this.state.current_round_index];
-
-    // const scoring_rows = <PlayerRows round={round} field='tricks'
-    //     onLongPress={ (player, fld) => this._clearValue(player,fld) }
-    //     onLeftPress={ (player, fld) => this._changeValue(player,fld,-1, round.tricks) }
-    //     onRightPress={ (player, fld) => this._changeValue(player,fld,+1, round.tricks) } /> 
-
-    // render_rows = () => { return (round.stage === BIDDING) ? bidding_rows : scoring_rows; }
 
     if( round.stage === BIDDING ){
       return ( <BiddingPage round={round} 
