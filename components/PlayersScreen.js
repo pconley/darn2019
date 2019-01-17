@@ -6,11 +6,26 @@ import update from 'immutability-helper';
 
 import AbstractPage from './AbstractPage';
 
-export default class GroupPage extends Component {
+export default class PlayersScreen extends Component {
+    static navigationOptions = {
+        title: 'Players Screen',
+      };
   constructor(props) {
     super(props);
     this.state = { 
-        players: this.props.players 
+        xplayers: this.props.players,
+        players: [
+            {id:1, checked: false, name:'pat'},
+            {id:2, checked: false, name:'mj'},
+            {id:3, checked: true, name:'claire'},
+            {id:4, checked: false, name:'ted'},
+            {id:5, checked: false, name:'tim'},
+            {id:6, checked: false, name:'jim'},
+            {id:7, checked: false, name:'jackie'},
+            {id:8, checked: false, name:'cheryl'},
+            {id:9, checked: false, name:'dani'},
+            {id:10, checked: false, name:'john'},
+          ]
     };
   }
 
@@ -22,8 +37,18 @@ export default class GroupPage extends Component {
   }
 
   render = () => { 
+    const { navigation } = this.props;
+    const itemId = navigation.getParam('itemId', 'NO-ID');
+
+    const selected_players = this.state.players.reduce((acc, player) => {
+      if (player.checked) {
+        acc.push({name:player.name, id:player.id, bid:0, tricks:0, score:5 });
+      }
+      return acc;
+    }, []);
+
     return (
-        <View style={{paddingTop:100}}>
+        <View style={{paddingTop:10}}>
         <Text>Who is playing?</Text>
         <FlatList style={{paddingTop:20}}
             data={this.state.players}
@@ -36,11 +61,21 @@ export default class GroupPage extends Component {
                 />    
             }
         ></FlatList>
-        <Button title="Next" loading 
+        <Button
+            title="Next"
+            onPress={() => this.props.navigation.navigate('Game', {players: selected_players})}
+        />
+
+{/* this.props.navigation.navigate('Details', {
+              itemId: 86,
+              otherParam: 'anything you want here',
+            }); */}
+            
+        {/* <Button title="Next" loading 
                 onPress={() => this.props.onNext(this.state.players)}
                 buttonStyle={styles.bottomButtonStyle}
                 backgroundColor="rgba(92, 99,216, 1)"
-            />
+            /> */}
 
         </View>  
 )}

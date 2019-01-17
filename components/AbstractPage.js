@@ -47,7 +47,7 @@ export default class AbstractPage extends Component {
 
     return(
         <View style={{ paddingTop:40 }}>
-            {sample_header}
+            {/* {sample_header} */}
             <InfoBar round={this.props.round}/>
             {this.render_body()}
             {game_buttons()}

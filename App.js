@@ -7,10 +7,18 @@ import update from 'immutability-helper';
 
 import { Button, Header } from 'react-native-elements'
 
+import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
+
+
 // import PlayerRows from './components/PlayerRows'
-import GroupPage from './components/GroupPage';
+import GroupPage from './components/PlayersScreen';
+import GameScreen from './components/GameScreen';
 import BiddingPage from './components/BiddingPage';
 import ScoringPage from './components/ScoringPage';
+
+import HomeScreen from './HomeScreen';
+import ProfileScreen from './ProfileScreen';
+import DetailsScreen from './DetailsScreen';
 
 // GAME Stage
 export const FORMING = "Forming";
@@ -24,6 +32,34 @@ const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
 });
+
+////////////////////////////////////////////
+
+
+const AppNavigator = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Group: GroupPage,
+    Game: GameScreen,
+    Profile: ProfileScreen,
+    Details: DetailsScreen,
+    Bidding: BiddingPage
+  },
+  {
+    initialRouteName: "Home"
+  }
+);
+
+// const TabNavigator = createBottomTabNavigator({
+//   Home: HomeScreen,
+//   Details: DetailsScreen,
+// });
+// const AppContainer = createAppContainer(TabNavigator);
+
+
+const AppContainer = createAppContainer(AppNavigator);
+
+//////////////////////////////////////////////
 
 export default class App extends Component {
   constructor(props) {
@@ -154,8 +190,11 @@ export default class App extends Component {
       });
   }
 
-
   render() {
+    return <AppContainer />;
+  }
+
+  xrender() {
 
     console.log("app render: stage = "+this.state.stage);
 
