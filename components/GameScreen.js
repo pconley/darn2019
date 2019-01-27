@@ -31,220 +31,33 @@ export default class GameScreen extends Component {
       };
     constructor(props) {
       super(props);
-      console.log("here", props);
       this.state = {
-        players: this.props.navigation.getParam('all_players'),
-        game: this.props.navigation.getParam('game'),
-        stage: FORMING,
-        current_round_index: 0,
-        tricks: [7, 3, 1, 2, 4],
-        rounds: [
-          { tricks: 5,
-            total_bid: 0,
-            total_tricks: 0, 
-            dealer_id: 3,
-            stage: BIDDING,
-            players: [
-              {id:1, bid:0, tricks:0, score: 5, name:'pat'},
-              {id:2, bid:0, tricks:0, score: 5, name:'mj'},
-              {id:3, bid:0, tricks:0, score: 5, name:'claire'},
-              {id:4, bid:0, tricks:0, score: 5, name:'ted'},
-              {id:5, bid:0, tricks:0, score: 5, name:'tim'},
-            ]
-          }
-        ],
-        xplayers: [
-          {id:1, checked: false, name:'pat'},
-          {id:2, checked: false, name:'mj'},
-          {id:3, checked: true, name:'claire'},
-          {id:4, checked: false, name:'ted'},
-          {id:5, checked: false, name:'tim'},
-          {id:6, checked: false, name:'jim'},
-          {id:7, checked: false, name:'jackie'},
-          {id:8, checked: false, name:'cheryl'},
-          {id:9, checked: false, name:'dani'},
-          {id:10, checked: false, name:'john'},
-        ]
+        stage: BIDDING,
       };
     }
   
-    _calcScore = (bid, tricks) => { return (bid === tricks) ? bid*bid+5 : -Math.max(bid,tricks); };
-  
-    _setValue = (player, field, value) => {
-      const total_field = 'total_'+field;
-      const s_round = this.state.rounds[this.state.current_round_index];
-      const player_index = s_round.players.findIndex( c => c.id === player.id );
-      const x_player = update(player,{[field]: {$set: value}, score: {$set: x_score}});
-      const {bid, tricks} = x_player;
-      const x_score = this._calcScore(bid, tricks);
-      const z_player = update(x_player,{score: {$set: x_score}});
-      const x_players = update(s_round.players, {[player_index]: { $set: z_player }});
-      const x_total = x_players.reduce((sum,x) => sum+x[field], 0 );
-      const x_round = update(s_round,{ [total_field]: {$set: x_total}, players: {$set: x_players} });
-      const x_rounds = update(this.state.rounds,{[this.state.current_round_index]: {$set: x_round}});
-      this.setState({ rounds: x_rounds });
-    }
-  
-    _setGameStage = (stage) => {
-      if( stage === PLAYING ){
-        // we are starting a new game, so (re)init the game state based on the 
-        // values in the setup object 
-        const tricks = this.state.tricks;
-        // const players = this.state.players.map((p) => ({name:p.name, id:p.id, bid:0, tricks:0, score:5 }))
-        
-        const players = this.state.players.reduce((acc, player) => {
-          if (player.checked) {
-            acc.push({name:player.name, id:player.id, bid:0, tricks:0, score:5 });
-          }
-          return acc;
-        }, []);
-        
-        const first_round = { tricks: tricks[0], total_bid: 0, total_tricks: 0, 
-            dealer_id: 3, stage: BIDDING,
-            players: players
-        };
-        const rounds = [first_round];
-        this.setState({ stage: stage, current_round_index: 0, rounds: rounds });
-      } else {
-        this.setState({ stage: stage });
-      }
-    }
-  
-    _setRoundStage = (stage) => {
-      console.log("set stage: "+stage);
-      const s_round = this.state.rounds[this.state.current_round_index];
-      const x_round = update(s_round,{ stage: {$set: stage} });
-      const x_rounds = update(this.state.rounds,{[this.state.current_round_index]: {$set: x_round}});
-      this.setState({ rounds: x_rounds });
-    }
-  
-    _changeValue = (player,field,delta,maxval=52) => {
-      console.log("app: change value ", delta);
-      // WARNING: Zero means set to zero; others are increments
-      const adjval = (delta === 0) ? -player[field] : delta;
-      const newval = Math.min(maxval,Math.max(0,player[field]+adjval)); 
-      this._setValue(player,field,newval);
-    }
-  
-    _clearValue = (player,field) => {
-      if (player.bid === 0) return;
-      this._setValue(player,field,0);
-    }
-  
-    _getDealerMessage = () => { 
-      const round = this.state.rounds[this.state.current_round_index];
-      const dealer = round.players.find( c => c.id === round.dealer_id );
-      const bad = round.tricks - round.total_bid + dealer.bid;
-      if( bad < 0 ) return "can bid anything."
-      return "can't bid "+bad;
-    }
-  
-    _getDealerName = () => {
-      const round = this.state.rounds[this.state.current_round_index];
-      const index = round.players.findIndex( c => c.id === round.dealer_id );
-      return this.state.players[index].name;
-    }
-  
-    componentDidMount(){
-      console.log("game screen: did mount")
-        const { navigation } = this.props;
-        // const  = navigation.getParam('players', []);
-        // console.log("GameScreen: did mount", players);
-
-        // const tricks = this.state.tricks;
-
-        // const first_round = { 
-        //     tricks: tricks[0], 
-        //     total_bid: 0, total_tricks: 0, 
-        //     dealer_id: 3, stage: BIDDING,
-        //     players: players
-        // };
-
-        // const rounds = [fiplayersrst_round];
-        // this.setState({ stage: PLAYING, current_round_index: 0, rounds: rounds });
-
-
-      return fetch('https://facebook.github.io/react-native/movies.json')
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson.movies,
-          }, function(){});
-        })
-        .catch((error) =>{
-          console.error(error);
-        });
+    _setView = (stage) => {
+      console.log("game screen: set view: "+stage);
+      this.setState({ stage: stage });
     }
 
-  
+    _get_view(stage){
+      switch(stage) {
+        case BIDDING:
+          return <BiddingPage onSetStage={ this._setView }/>
+          break;        
+        case SCORING:
+          return <ScoringPage onSetStage={ this._setView } />
+          break;
+        default:
+          return <Text style={{paddingTop:200}}>Error Page</Text>;
+      } 
+    }
+
     render() {
-  
-      console.log("game screen: render: stage = "+this.state.stage);
-  
-      if(this.state.isLoading){
-        return(
-          <View style={{flex: 1, padding: 20}}>
-            <ActivityIndicator/>
-          </View>
-        )
-      }
-  
-      const round = { stage: BIDDING };
-
-      console.log("game screen: round stage = ",round.stage);
-
-
-      if( round.stage === BIDDING ){
-        return ( 
-          <Provider store={gameStore}>
-          <BiddingPage round={round} 
-            onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }
-            onChangeStage={ this._setRoundStage }
-          /></Provider>
-        )
-      }
-  
-      if( round.stage === SCORING ){
-        return ( <ScoringPage round={round} 
-          onChangeValue={ (player, val) => this._changeValue(player,'tricks',val) }  /> )
-      }
-
-      console.log("game screen: error page");
-
-
-      return (<Text style={{paddingTop:200}}>Error Page</Text>)
+      console.log("game screen: render: stage = ",this.state.stage);
+      const view = this._get_view(this.state.stage);
+      return <Provider store={gameStore}>{view}</Provider>
     }
   }
-  
-  const styles = StyleSheet.create({
-    topline: {
-      paddingTop: 2,
-      paddingLeft: 10,
-      paddingRight: 10,
-      paddingBottom: 2,
-      fontSize: 14,
-      fontWeight: 'bold',
-      backgroundColor: 'lightgray',
-    },
-    bottomButtonStyle: {
-      width: 150,
-      height: 45,
-      borderColor: "transparent",
-      borderWidth: 0,
-      borderRadius: 5
-    },
-    instructions: {
-      paddingTop: 0,
-      textAlign: 'center',
-      color: '#333333',
-      marginBottom: 5,
-    },
-    blue: {
-      color: 'blue',
-    },
-    red: {
-      color: 'red',
-    },
-  })
   

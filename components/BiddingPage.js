@@ -10,11 +10,13 @@ import { connect } from 'react-redux';
 
 function BiddingPage(props){
   return <View>
-            <Button title="bid" onPress={props.onBid}/>
             <InfoBar round={props.round}/>
             <PlayerRows round={props.round} field='bid' changer={props.onChangeField}/> 
             <Button title="Start Scoring" loading
-              onPress={() => props.onChangeStage("Scoring")}
+              onPress={() => {
+                props.onSetStage("Scoring")
+                props.onChangeStage("Scoring")
+              }}
               loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={button_style}
@@ -24,7 +26,6 @@ function BiddingPage(props){
 }
 
 function mapStateToProps(state){
-  // NOTE: not all the state needs to map to props
   return { round: state.rounds[state.current_round_index] }
 }
 
@@ -40,7 +41,6 @@ function mapDispatchToProps(dispatch){
       const action = { type: "CHANGE_STAGE", value: value }
       dispatch(action);
     }
-
   }
 }
 
