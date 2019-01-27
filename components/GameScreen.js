@@ -1,17 +1,12 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, Button } from 'react-native';
-import { FlatList, SectionList, ActivityIndicator } from 'react-native';
-
-import update from 'immutability-helper';
-
+import { Text } from 'react-native';
 import { Provider } from 'react-redux'
+
+// the GAME screen controls the playing view... Bidding or Scoring
+// and passes the GameStore to those views
+
 import gameStore from './GameStore'
 
-// GAME Stage
-export const FORMING = "Forming";
-export const STARTING = "Starting";
-export const PLAYING = "Playing";
-// ROUND Stage
 export const BIDDING = "Bidding";
 export const SCORING = "Scoring";
 
@@ -36,7 +31,7 @@ export default class GameScreen extends Component {
       };
     }
   
-    _setView = (stage) => {
+    _setStage = (stage) => {
       console.log("game screen: set view: "+stage);
       this.setState({ stage: stage });
     }
@@ -44,13 +39,13 @@ export default class GameScreen extends Component {
     _get_view(stage){
       switch(stage) {
         case BIDDING:
-          return <BiddingPage onSetStage={ this._setView }/>
+          return <BiddingPage onSetStage={ this._setStage }/>
           break;        
         case SCORING:
-          return <ScoringPage onSetStage={ this._setView } />
+          return <ScoringPage onSetStage={ this._setStage } />
           break;
         default:
-          return <Text style={{paddingTop:200}}>Error Page</Text>;
+          return <Text style={{paddingTop:200}}>Error in Stage: {stage}</Text>;
       } 
     }
 

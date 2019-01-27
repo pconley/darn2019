@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import { Alert, Text, View, Button, FlatList, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements'
-
 import update from 'immutability-helper';
 
-import AbstractPage from './AbstractPage';
 
 export default class PlayersScreen extends Component {
     static navigationOptions = {

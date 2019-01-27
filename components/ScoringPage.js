@@ -12,8 +12,8 @@ function ScoringPage(props){
             <PlayerRows round={props.round} field='tricks' changer={props.onChangeField}/> 
             <Button title="Back to Bidding" loading
               onPress={() => {
-                props.onSetStage("Bidding")
-                props.onChangeStage("Bidding")
+                props.onSetStage("Bidding")    // changes the view
+                props.onChangeStage("Bidding") // changes the store
               }}
               loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
               titleStyle={{ fontWeight: "700" }}

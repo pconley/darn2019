@@ -3,8 +3,6 @@ import { Platform, StyleSheet, Text, View, Button, FlatList } from 'react-native
 
 import update from 'immutability-helper';
 
-import Game from './GameObject'
-
 export default class StartScreen extends Component {
     static navigationOptions = {
       title: 'Start',
