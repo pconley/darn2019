@@ -3,7 +3,6 @@ import { Alert, Text, View, Button, FlatList, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import update from 'immutability-helper';
 
-
 export default class PlayersScreen extends Component {
     static navigationOptions = {
         title: 'Players Screen',

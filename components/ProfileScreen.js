@@ -3,8 +3,8 @@ import { Platform, StyleSheet, Text, View, Button } from 'react-native';
 
 import { Provider } from 'react-redux'
 
-import Counter from './src/Counter';
-import store from './src/index'
+import Counter from '../src/Counter';
+import store from '../src/index'
 
 export default class ProfileScreen extends Component {
     static navigationOptions = {

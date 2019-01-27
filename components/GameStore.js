@@ -13,8 +13,8 @@ export const SCORING = "Scoring";
 const calcScore = (bid, tricks) => { return (bid === tricks) ? bid*bid+5 : -Math.max(bid,tricks); };
 
 const initialState = { 
-    count: 8,  // example 
-    stage: FORMING,
+    // count: 8,  // example 
+    // stage: FORMING,
     viewing_round_index: 0,
     current_round_index: 0,
     tricks: [7, 3, 1, 2, 4],

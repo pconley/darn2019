@@ -50,6 +50,7 @@ export default class App extends Component {
     return fetch('https://facebook.github.io/react-native/movies.json')
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log("movies...", responseJson.movies);
         this.setState({
           isLoading: false,
           dataSource: responseJson.movies,
@@ -61,6 +62,8 @@ export default class App extends Component {
   }
 
   render() {
+    console.log("app: render: state...", this.state);
+    return <Text>xxxx</Text>
     return <AppContainer />;
   }
 }
