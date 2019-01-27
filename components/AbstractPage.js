@@ -17,6 +17,9 @@ export default class AbstractPage extends Component {
 
   render() { 
 
+    // const round = this.props.navigation.getParam('round', {})
+    const { round } = this.props;
+
     const instructions = Platform.select({
         ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
         android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
@@ -48,9 +51,9 @@ export default class AbstractPage extends Component {
     return(
         <View style={{ paddingTop:40 }}>
             {/* {sample_header} */}
-            <InfoBar round={this.props.round}/>
+            <InfoBar round={round}/>
             {this.render_body()}
-            {game_buttons()}
+            {/* {game_buttons()} */}
             <Text style={styles.instructions}>{instructions}</Text>
         </View>
     );

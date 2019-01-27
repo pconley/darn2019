@@ -14,8 +14,8 @@ export default class DetailsScreen extends Component {
               onPress={() => this.props.navigation.push('Details')}
             />
             <Button
-              title="Go to Home"
-              onPress={() => this.props.navigation.navigate('Home')}
+              title="Go to Profile"
+              onPress={() => this.props.navigation.navigate('Profile')}
             />
             <Button
               title="Go back"

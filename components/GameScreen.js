@@ -4,6 +4,9 @@ import { FlatList, SectionList, ActivityIndicator } from 'react-native';
 
 import update from 'immutability-helper';
 
+import { Provider } from 'react-redux'
+import gameStore from './GameStore'
+
 // GAME Stage
 export const FORMING = "Forming";
 export const STARTING = "Starting";
@@ -28,8 +31,10 @@ export default class GameScreen extends Component {
       };
     constructor(props) {
       super(props);
+      console.log("here", props);
       this.state = {
-        isLoading: true,
+        players: this.props.navigation.getParam('all_players'),
+        game: this.props.navigation.getParam('game'),
         stage: FORMING,
         current_round_index: 0,
         tricks: [7, 3, 1, 2, 4],
@@ -48,7 +53,7 @@ export default class GameScreen extends Component {
             ]
           }
         ],
-        players: [
+        xplayers: [
           {id:1, checked: false, name:'pat'},
           {id:2, checked: false, name:'mj'},
           {id:3, checked: true, name:'claire'},
@@ -141,22 +146,22 @@ export default class GameScreen extends Component {
     }
   
     componentDidMount(){
-
+      console.log("game screen: did mount")
         const { navigation } = this.props;
-        const players = navigation.getParam('players', []);
-        console.log("GameScreen: did mount", players);
+        // const  = navigation.getParam('players', []);
+        // console.log("GameScreen: did mount", players);
 
-        const tricks = this.state.tricks;
+        // const tricks = this.state.tricks;
 
-        const first_round = { 
-            tricks: tricks[0], 
-            total_bid: 0, total_tricks: 0, 
-            dealer_id: 3, stage: BIDDING,
-            players: players
-        };
+        // const first_round = { 
+        //     tricks: tricks[0], 
+        //     total_bid: 0, total_tricks: 0, 
+        //     dealer_id: 3, stage: BIDDING,
+        //     players: players
+        // };
 
-        const rounds = [first_round];
-        this.setState({ stage: PLAYING, current_round_index: 0, rounds: rounds });
+        // const rounds = [fiplayersrst_round];
+        // this.setState({ stage: PLAYING, current_round_index: 0, rounds: rounds });
 
 
       return fetch('https://facebook.github.io/react-native/movies.json')
@@ -171,14 +176,11 @@ export default class GameScreen extends Component {
           console.error(error);
         });
     }
-  
-    // render() {
-    //   return <AppContainer />;
-    // }
+
   
     render() {
   
-      console.log("app render: stage = "+this.state.stage);
+      console.log("game screen: render: stage = "+this.state.stage);
   
       if(this.state.isLoading){
         return(
@@ -188,45 +190,29 @@ export default class GameScreen extends Component {
         )
       }
   
-    //   if( this.state.stage === FORMING ){
-    //     return( <GroupPage 
-    //                 players={this.state.players}
-    //                 onNext={(players) => { 
-    //                   this._setGameStage(STARTING); 
-    //                   console.log("players",players)
-    //                   this.setState({ players: players });
-    //                 }
-    //                 }
-    //             /> 
-    //     )
-    //   }
-  
-    //   if( this.state.stage === STARTING ){
-    //     return(
-    //       <View style={{paddingTop:200}}>
-    //         <Button
-    //           title="Start Game" 
-    //           onPress={() => this._setGameStage(PLAYING)}
-    //           buttonStyle={[styles.bottomButtonStyle]}
-    //           backgroundColor="rgba(92, 99,216, 1)"
-    //         />     
-    //       </View>  
-    //     )
-    //   }
-  
-      const round = this.state.rounds[this.state.current_round_index];
-  
+      const round = { stage: BIDDING };
+
+      console.log("game screen: round stage = ",round.stage);
+
+
       if( round.stage === BIDDING ){
-        return ( <BiddingPage round={round} 
-          onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }
-          onChangeStage={ this._setRoundStage }
-        /> )
+        return ( 
+          <Provider store={gameStore}>
+          <BiddingPage round={round} 
+            onChangeValue={ (player, val) => this._changeValue(player,'bid',val) }
+            onChangeStage={ this._setRoundStage }
+          /></Provider>
+        )
       }
   
       if( round.stage === SCORING ){
         return ( <ScoringPage round={round} 
           onChangeValue={ (player, val) => this._changeValue(player,'tricks',val) }  /> )
       }
+
+      console.log("game screen: error page");
+
+
       return (<Text style={{paddingTop:200}}>Error Page</Text>)
     }
   }

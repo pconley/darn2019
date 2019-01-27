@@ -7,16 +7,18 @@ import update from 'immutability-helper';
 
 import { Button, Header } from 'react-native-elements'
 
+// import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 
-
-// import PlayerRows from './components/PlayerRows'
-import GroupPage from './components/PlayersScreen';
+// import GroupPage from './components/PlayersScreen';
 import GameScreen from './components/GameScreen';
 import BiddingPage from './components/BiddingPage';
 import ScoringPage from './components/ScoringPage';
+import PlayersScreen from './components/PlayersScreen';
 
-import HomeScreen from './HomeScreen';
+import GameWithNavigationState from './components/GameNavigator'
+
+import StartScreen from './StartScreen';
 import ProfileScreen from './ProfileScreen';
 import DetailsScreen from './DetailsScreen';
 
@@ -35,29 +37,53 @@ const instructions = Platform.select({
 
 ////////////////////////////////////////////
 
+const GameStackNavigator = createStackNavigator({
+  Start: StartScreen,
+  // Group: GroupPage,
+  Game: GameScreen,
+  // Profile: ProfileScreen,
+  // Scoring: ScoringPage,
+  Bidding: BiddingPage
+});
 
-const AppNavigator = createStackNavigator(
-  {
-    Home: HomeScreen,
-    Group: GroupPage,
-    Game: GameScreen,
-    Profile: ProfileScreen,
-    Details: DetailsScreen,
-    Bidding: BiddingPage
-  },
-  {
-    initialRouteName: "Home"
-  }
-);
 
-// const TabNavigator = createBottomTabNavigator({
-//   Home: HomeScreen,
-//   Details: DetailsScreen,
+// const { dispatch, nav } = this.props;
+// const GameWithNavigationState = <GameStackNavigator navigation={{
+//    dispatch: dispatch, state: nav, addListener,
+// }} />
+
+// const GameWithNavigationState = ({ dispatch, nav }) => (
+//   <GameStackNavigator
+//     navigation={{ dispatch: dispatch, state: nav }}
+//   />
+// );
+
+// const mapStateToProps = state => ({
+//   nav: state.nav,
 // });
-// const AppContainer = createAppContainer(TabNavigator);
+  
+// import { connect } from 'react-redux';
 
+// const x = connect(mapStateToProps)(GameWithNavigationState);
 
-const AppContainer = createAppContainer(AppNavigator);
+const SettingsStack = createStackNavigator({
+  Settings: ProfileScreen,
+  Details: DetailsScreen,
+});
+
+const TabNavigator = createBottomTabNavigator(
+  {
+    Game: GameStackNavigator,
+    Settings: SettingsStack,
+    Players: PlayersScreen,
+  },
+  {tabBarOptions: {
+    activeTintColor: 'tomato',
+    inactiveTintColor: 'gray',
+  }}
+  );
+
+const AppContainer = createAppContainer(TabNavigator);
 
 //////////////////////////////////////////////
 
@@ -196,7 +222,7 @@ export default class App extends Component {
 
   xrender() {
 
-    console.log("app render: stage = "+this.state.stage);
+    console.log("app xrender: stage = "+this.state.stage);
 
     if(this.state.isLoading){
       return(
@@ -279,3 +305,4 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 })
+

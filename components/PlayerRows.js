@@ -7,9 +7,8 @@ export default class PlayerRows extends Component {
 
     render_row = ({item}) => {
 
-        console.log(item);
         const {id, bid, tricks, score} = item;
-        const {round, field} = this.props;
+        const {round, field, changer} = this.props;
         const {stage, players, dealer_id} = round;
         const dealer = players.find( c => c.id === dealer_id );
         const dealer_color = (stage === "Scoring") ? "red" : "blue";
@@ -22,8 +21,8 @@ export default class PlayerRows extends Component {
         return (
             <View key={id} style={styles.playerRow}>
               <Button title='<'
-                      onPress={() => this.props.onLeftPress(item, field)} 
-                      onLongPress={() => this.props.onLongPress(item, field)}
+                      onPress={() => changer(item, field,-1)} 
+                    //   onLongPress={() => this.props.onLongPress(item, field)}
                       buttonStyle={styles.counterButtonStyle}
                       containerViewStyle={{ marginLeft: 5, marginRight: 0 }}
                   />
@@ -32,8 +31,8 @@ export default class PlayerRows extends Component {
                   containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
               />
               <Button title='>' 
-                      onPress={() => this.props.onRightPress(item, field)} 
-                      onLongPress={() => this.props.onLongPress(item, field)}
+                      onPress={() => changer(item, field,+1)} 
+                    //   onLongPress={() => this.props.onLongPress(item, field)}
                       buttonStyle={styles.counterButtonStyle}
                       containerViewStyle={{ marginLeft: 0, marginRight: 10 }}
                   />
@@ -45,6 +44,7 @@ export default class PlayerRows extends Component {
 
   render() {
     const {round} = this.props;
+    console.log("player rows: round",round)
     const {stage, players} = round;
     return (
         <View style={{paddingTop:20}}>

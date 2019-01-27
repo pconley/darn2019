@@ -9,6 +9,7 @@ export default class InfoBar extends Component {
 
   render() {
     const round = this.props.round;
+    console.log("info bar: round...",round);
     return (
         <View>
           <Text style={styles.info_bar}>Tricks: {round.tricks}</Text>
@@ -20,7 +21,6 @@ export default class InfoBar extends Component {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
     info_bar: {
