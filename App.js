@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 
 import GameScreen    from './components/GameScreen';
-import PlayersScreen from './components/PlayersScreen';
+import ProfileTab    from './components/ProfileTab';
 import StartScreen   from './components/StartScreen';
+import PlayersScreen from './components/PlayersScreen';
 import ProfileScreen from './components/ProfileScreen';
 import DetailsScreen from './components/DetailsScreen';
 
@@ -18,18 +19,23 @@ const GameStackNavigator = createStackNavigator({
   Game: GameScreen,
 });
 
-const SettingsStackNavigator = createStackNavigator({
+const ProfileStackNavigator = createStackNavigator({
   Settings: ProfileScreen,
   Details: DetailsScreen,
 });
 
+const TestStackNavigator = createStackNavigator({
+  TestMain: ProfileTab,
+});
+
 const TabNavigator = createBottomTabNavigator(
-  {
+  { 
     Game: GameStackNavigator,
+    Test: TestStackNavigator,
     Players: PlayersScreen,
-    Settings: SettingsStackNavigator,
+    Profile: ProfileStackNavigator,
   },
-  {tabBarOptions: {
+  { tabBarOptions: {
     activeTintColor: 'tomato',
     inactiveTintColor: 'gray',
   }}
@@ -63,7 +69,6 @@ export default class App extends Component {
 
   render() {
     console.log("app: render: state...", this.state);
-    return <Text>xxxx</Text>
     return <AppContainer />;
   }
 }
