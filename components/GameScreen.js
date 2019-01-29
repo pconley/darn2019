@@ -9,7 +9,9 @@ import gameStore from './GameStore'
 
 export const BIDDING = "Bidding";
 export const SCORING = "Scoring";
+export const REVIEWING = "Reviewing";
 
+import ReviewPage from './ReviewPage';
 import BiddingPage from './BiddingPage';
 import ScoringPage from './ScoringPage';
 
@@ -27,6 +29,7 @@ export default class GameScreen extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        round_index: 0,
         stage: BIDDING,
       };
     }
@@ -36,13 +39,24 @@ export default class GameScreen extends Component {
       this.setState({ stage: stage });
     }
 
+    _incrementRound = () => {
+      console.log("game screen: incr round");
+      // this.setState({ round_index: stage });
+    }
+
     _get_view(stage){
       switch(stage) {
         case BIDDING:
-          return <BiddingPage onSetStage={ this._setStage }/>
+          return <BiddingPage 
+            round_index={this.state.round_index} 
+            onIncrementRound={this._incrementRound}
+            onSetStage={ this._setStage }/>
           break;        
         case SCORING:
-          return <ScoringPage onSetStage={ this._setStage } />
+          return <ScoringPage roundIndex={this.state.round_index} onSetStage={ this._setStage } />
+          break;
+        case REVIEWING:
+          return <ReviewPage onSetStage={ this._setStage } />
           break;
         default:
           return <Text style={{paddingTop:200}}>Error in Stage: {stage}</Text>;

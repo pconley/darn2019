@@ -20,6 +20,15 @@ function ScoringPage(props){
               buttonStyle={button_style}
               containerStyle={{ marginTop: 20 }}
             />
+            <Button title="Finish Round"
+              onPress={() => {
+                props.onSetStage("Reviewing")    // changes the view
+                props.onChangeStage("Reviewing") // changes the store
+              }}
+              titleStyle={{ fontWeight: "700" }}
+              buttonStyle={button_style}
+              containerStyle={{ marginTop: 20 }}
+            />
           </View>
 }
 

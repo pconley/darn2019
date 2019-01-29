@@ -48,10 +48,9 @@ const updatePlayer = (player,field,delta,maxval=52) => {
     return z_player;
 }
 
-const updateRound = (round, player, field, value) => {
+const updateRound = (round, player) => {
     const player_index = round.players.findIndex( c => c.id === player.id );
-    const x_player = updatePlayer(player, field, value);
-    const x_players = update(round.players, {[player_index]: { $set: x_player }});
+    const x_players = update(round.players, {[player_index]: { $set: player }});
     const total_bid = x_players.reduce((sum,x) => sum+x.bid, 0 );
     const total_tricks = x_players.reduce((sum,x) => sum+x.trick, 0 );
     const x_round = update(round,{ 
@@ -69,9 +68,10 @@ const reducer = (state = initialState, action) => {
         case "CHANGE_FIELD":
             // changes the BID or TRICKS for a given player (in round)
             const { field, player, value } = action;
-            const x_round = updateRound(round, player, field, value );
+            const x_player = updatePlayer(player, field, value);
+            const x_round  = updateRound(round, x_player);
             const x_rounds = update(state.rounds,{[round_index]: {$set: x_round}})
-            const x_state = update(state,{ rounds: {$set: x_rounds} });
+            const x_state  = update(state,{ rounds: {$set: x_rounds} });
             return x_state
           break;
         case "CHANGE_STAGE":
