@@ -6,7 +6,7 @@ import { FlatList } from 'react-native';
 export default class PlayerRows extends Component {
 
     render_row = ({item}) => {
-
+        console.log("plyer rows: render row: item...",item);
         const {id, bid, tricks, score} = item;
         const {round, field, changer} = this.props;
         const {stage, players, dealer_id} = round;
@@ -17,6 +17,7 @@ export default class PlayerRows extends Component {
         const tricksText = String(tricks)+"/"+String(bid);
         const valueText = (stage === "Scoring") ? tricksText : String(bid);
         const scoreText = (stage === "Scoring") ? "S: "+score : "";
+        console.log("plyer rows: render row: stateg...",stage);
 
         return (
             <View key={id} style={styles.playerRow}>
@@ -44,8 +45,8 @@ export default class PlayerRows extends Component {
 
   render() {
     const {round} = this.props;
-    console.log("player rows: round",round)
     const {stage, players} = round;
+    console.log("player rows: players...",players)
     return (
         <View style={{paddingTop:20}}>
           <FlatList data={players}

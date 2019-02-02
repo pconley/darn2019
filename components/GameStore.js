@@ -2,6 +2,10 @@ import { createStore } from 'redux';
 
 import update from 'immutability-helper';
 
+import {saveState, loadState} from './Storage';
+
+import {SAVE_STATE, saveStateAction} from "./Actions"
+
 // GAME Stage
 export const FORMING  = "Forming";
 export const STARTING = "Starting";
@@ -65,6 +69,9 @@ const reducer = (state = initialState, action) => {
     const { current_round_index : round_index } = state;
     const round = state.rounds[round_index];
     switch(action.type) {
+        case SAVE_STATE:
+            // save the entire state as in after a load from storage
+            return action.payload;
         case "CHANGE_FIELD":
             // changes the BID or TRICKS for a given player (in round)
             const { field, player, value } = action;
@@ -88,5 +95,16 @@ const reducer = (state = initialState, action) => {
 }
 
 const gameStore = createStore(reducer);
+
+loadState( (data) => {
+    console.log("game store: loaded data into state...", data);
+    gameStore.dispatch(saveStateAction(data))
+});
+
+gameStore.subscribe( () => {
+    console.log("game state: saving");
+    saveState(gameStore.getState());
+
+})
 
 export default gameStore;

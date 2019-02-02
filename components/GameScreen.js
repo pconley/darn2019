@@ -49,14 +49,15 @@ export default class GameScreen extends Component {
         case BIDDING:
           return <BiddingPage 
             round_index={this.state.round_index} 
-            onIncrementRound={this._incrementRound}
             onSetStage={ this._setStage }/>
           break;        
         case SCORING:
           return <ScoringPage roundIndex={this.state.round_index} onSetStage={ this._setStage } />
           break;
         case REVIEWING:
-          return <ReviewPage onSetStage={ this._setStage } />
+          return <ReviewPage 
+            onIncrementRound={this._incrementRound}
+            onSetStage={ this._setStage } />
           break;
         default:
           return <Text style={{paddingTop:200}}>Error in Stage: {stage}</Text>;
