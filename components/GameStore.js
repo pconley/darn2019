@@ -16,28 +16,44 @@ export const SCORING = "Scoring";
 
 const calcScore = (bid, tricks) => { return (bid === tricks) ? bid*bid+5 : -Math.max(bid,tricks); };
 
-const initialState = { 
-    // count: 8,  // example 
-    // stage: FORMING,
-    viewing_round_index: 0,
-    current_round_index: 0,
-    tricks: [7, 3, 1, 2, 4],
-    rounds: [
-      { tricks: 5,
-        total_bid: 0,
-        total_tricks: 0, 
-        dealer_id: 3,
-        stage: BIDDING,
-        players: [
-          {id:1, bid:0, tricks:0, score: calcScore(0,0), name:'Rat'},
-          {id:2, bid:0, tricks:0, score: calcScore(0,0), name:'mj'},
-          {id:3, bid:0, tricks:0, score: calcScore(0,0), name:'claire'},
-          {id:4, bid:0, tricks:0, score: calcScore(0,0), name:'ted'},
-          {id:5, bid:0, tricks:0, score: calcScore(0,0), name:'tim'},
-        ]
-      }
-    ],
-};
+const players = [
+    {id:1, name:'Patrick'},
+    {id:2, name:'MJ'},
+    {id:3, name:'claire'},
+    {id:4, name:'ted'},
+    {id:5, name:'tim'},
+]
+
+const createRound = (t, n, players) => {
+    // create the Nth round in a game of players.  
+    // this round will have t cards dealt (tricks)
+    const index = n%players.length;
+    // const zeroScore = calcScore(0,0)
+    const ps = players.map((p) => { return(
+        {id: p.id, name: p.name, bid: 0, tricks: 0, score: 0}
+    )});
+    return ({ 
+        tricks: t,
+        dealer_id: players[index].id,
+        total_tricks: 0, total_bids: 0, 
+        stage: BIDDING, players: ps });
+}
+
+const createState = (tricks) => {
+    console.log("game store: createState: tricks...", tricks);
+    dealer_turn = 0;
+    const rounds = tricks.map((t) => createRound(t, dealer_turn++, players))
+    const state = { 
+        tricks: tricks, 
+        players: players,
+        viewing_round_index: 0,
+        current_round_index: 0, 
+        rounds: rounds};
+
+    return state;
+}
+
+const initialState = createState([7, 3, 1, 2, 4]);
 
 const updatePlayer = (player,field,delta,maxval=52) => {
     console.log("game store: change value ", delta);
@@ -56,7 +72,7 @@ const updateRound = (round, player) => {
     const player_index = round.players.findIndex( c => c.id === player.id );
     const x_players = update(round.players, {[player_index]: { $set: player }});
     const total_bid = x_players.reduce((sum,x) => sum+x.bid, 0 );
-    const total_tricks = x_players.reduce((sum,x) => sum+x.trick, 0 );
+    const total_tricks = x_players.reduce((sum,x) => sum+x.tricks, 0 );
     const x_round = update(round,{ 
         total_bid: {$set: total_bid}, 
         total_tricks: {$set: total_tricks}, 
@@ -89,6 +105,11 @@ const reducer = (state = initialState, action) => {
             console.log("changed stage state",s_state);
             return s_state;
             break;
+        case "INCREMENT_ROUND":
+            const c_index = round_index + 1;
+            const c_state = update(state,{ current_round_index: {$set: c_index}});
+            return c_state;
+            break;
         default:
           return state;
       } 
@@ -101,8 +122,13 @@ loadState( (data) => {
     gameStore.dispatch(saveStateAction(data))
 });
 
+export const initializeState = () => {
+    console.log("game store: initialize state");
+    gameStore.dispatch(saveStateAction(initialState))
+}
+
 gameStore.subscribe( () => {
-    console.log("game state: saving");
+    console.log("game store: saving");
     saveState(gameStore.getState());
 
 })

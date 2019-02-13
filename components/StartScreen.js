@@ -3,6 +3,8 @@ import { Platform, StyleSheet, Text, View, Button, FlatList } from 'react-native
 
 import update from 'immutability-helper';
 
+import { initializeState } from './GameStore';
+
 export default class StartScreen extends Component {
     static navigationOptions = {
       title: 'Start',
@@ -34,6 +36,10 @@ export default class StartScreen extends Component {
       console.log("start screen: save_players: players...",players); 
       const x_game = update(this.state.game,{players: {$set: players} });
       this.setState({ game: x_game });
+    }
+
+    init_session = () => {
+
     }
 
     start_round = () => {
@@ -84,6 +90,11 @@ export default class StartScreen extends Component {
             <Button
               title="Go To Game Screen"
               onPress={this.start_round}
+            />
+
+            <Button
+              title="Initialize State"
+              onPress={initializeState}
             />
           </View>
         );

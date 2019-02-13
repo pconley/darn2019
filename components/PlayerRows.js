@@ -6,18 +6,20 @@ import { FlatList } from 'react-native';
 export default class PlayerRows extends Component {
 
     render_row = ({item}) => {
-        console.log("plyer rows: render row: item...",item);
+        console.log("player rows: render xow: item...",item);
         const {id, bid, tricks, score} = item;
         const {round, field, changer} = this.props;
+        console.log("rount...",round);
         const {stage, players, dealer_id} = round;
         const dealer = players.find( c => c.id === dealer_id );
         const dealer_color = (stage === "Scoring") ? "red" : "blue";
+        console.log("dealer...",dealer);
         const textColor = id === dealer.id ? dealer_color : "black";
 
         const tricksText = String(tricks)+"/"+String(bid);
         const valueText = (stage === "Scoring") ? tricksText : String(bid);
         const scoreText = (stage === "Scoring") ? "S: "+score : "";
-        console.log("plyer rows: render row: stateg...",stage);
+        console.log("xlayer rows: render row: state...",stage);
 
         return (
             <View key={id} style={styles.playerRow}>
@@ -46,7 +48,7 @@ export default class PlayerRows extends Component {
   render() {
     const {round} = this.props;
     const {stage, players} = round;
-    console.log("player rows: players...",players)
+    console.log("player rows2: players...",players)
     return (
         <View style={{paddingTop:20}}>
           <FlatList data={players}
@@ -88,4 +90,4 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderRadius: 15
       },
-  })
+})

@@ -39,12 +39,16 @@ export default class GameScreen extends Component {
       this.setState({ stage: stage });
     }
 
-    _incrementRound = () => {
+    _incrementRound = (stage) => {
       console.log("game screen: incr round");
-      // this.setState({ round_index: stage });
+      this.setState({ 
+        round_index: this.state.round_index+1,
+        stage: stage
+      });
     }
 
     _get_view(stage){
+      console.log("*** game screen: get view: stage = "+stage);
       switch(stage) {
         case BIDDING:
           return <BiddingPage 
@@ -52,7 +56,9 @@ export default class GameScreen extends Component {
             onSetStage={ this._setStage }/>
           break;        
         case SCORING:
-          return <ScoringPage roundIndex={this.state.round_index} onSetStage={ this._setStage } />
+          return <ScoringPage 
+            roundIndex={this.state.round_index} 
+            onSetStage={ this._setStage } />
           break;
         case REVIEWING:
           return <ReviewPage 

@@ -10,10 +10,11 @@ import { connect } from 'react-redux';
 
 function BiddingPage(props){
   const { rounds, round_index } = props;
-  console.log("round index: ", round_index);
+  console.log("****bidding page: round index: ", round_index);
   const round = rounds[round_index];
   return <View>
-            <InfoBar round={round}/>
+            <Text>Bidding Page</Text>
+            <InfoBar round_index={round_index} round={round}/>
             <PlayerRows round={round} field='bid' changer={props.onChangeField}/> 
             <Button title="Start Scoring" loading
               onPress={() => {

@@ -8,6 +8,7 @@ import PlayerRows from './PlayerRows'
 
 function ScoringPage(props){
   return <View>
+            <Text>Scoring Page</Text>
             <InfoBar round={props.round}/>
             <PlayerRows round={props.round} field='tricks' changer={props.onChangeField}/> 
             <Button title="Back to Bidding" loading

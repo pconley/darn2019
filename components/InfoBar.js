@@ -8,13 +8,13 @@ export default class InfoBar extends Component {
   }
 
   render() {
-    const round = this.props.round;
+    const {round_index, round} = this.props;
     console.log("info bar: round...",round);
     return (
         <View>
           <Text style={styles.info_bar}>Tricks: {round.tricks}</Text>
           <Text style={styles.info_bar}>Players: {round.players.length}</Text>
-          <Text style={styles.info_bar}>Round {this.state.current_round_index} Stage: {round.stage}</Text>
+          <Text style={styles.info_bar}>Round #{round_index} Stage: {round.stage}</Text>
           <Text style={styles.info_bar}>Total Bid: {round.total_bid} of {round.tricks}</Text>
           <Text style={styles.info_bar}>Tricks Taken: {round.total_tricks} of {round.tricks}</Text>
         </View>    

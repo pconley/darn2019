@@ -10,13 +10,22 @@ import PlayerRows from './PlayerRows'
 function ReviewPage(props){
   const { rounds } = props
   console.log("review page: rounds...",rounds);
+
+  const render_round = ({item: round, index}) => {
+    console.log("review page: render round: round...", round);
+    const text = round.players.map((p) => { return p.score+"/"
+    });
+    return <Text>round {index} tricks = {round.tricks} :: {text}</Text>
+  }
+
   return <View>
             <Text>Review Game:</Text>
 
             <FlatList data={rounds}
-                renderItem={({item}) => <Text>tricks = {item.tricks}</Text>}
+                renderItem={render_round}
+                // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
                 //extraData={round} // to force refresh!!!
-                keyExtractor={(item, index) => String(item.id)}
+                keyExtractor={(item, index) => String(index)}
             ></FlatList>
 
             <Button title="Back to Scoring" loading
@@ -30,16 +39,15 @@ function ReviewPage(props){
               containerStyle={{ marginTop: 20 }}
             />
 
-
             <Button title="Next Round"
               onPress={() => {
-                props.onIncrementRound("Scoring")
+                props.onIncrementRound("Bidding")
+                props.onChangeRound("xxx")
               }}
               titleStyle={{ fontWeight: "700" }}
               buttonStyle={button_style}
               containerStyle={{ marginTop: 20 }}
             />
-
 
           </View>
 }
@@ -59,8 +67,13 @@ function mapDispatchToProps(dispatch){
       console.log("onChangeStage: ", value);
       const action = { type: "CHANGE_STAGE", value: value }
       dispatch(action);
+    },
+    onChangeRound: (value) => {
+      // TODO: note that value is not currently used
+      console.log("onChangeRound: ", value);
+      const action = { type: "INCREMENT_ROUND", value: value }
+      dispatch(action);
     }
-
   }
 }
 
