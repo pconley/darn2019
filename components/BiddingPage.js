@@ -3,6 +3,8 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
+import { ChangeField, ChangeStage } from './Actions';
+
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
 
@@ -30,19 +32,18 @@ function BiddingPage(props){
 }
 
 function mapStateToProps(state){
-  return { rounds: state.rounds }
+  console.log("BiddingPage: MSTP: state...",state);
+  return { rounds: state.game.rounds }
 }
 
 function mapDispatchToProps(dispatch){
   return { 
     onChangeField: (player, field, value) => {
-      console.log("onChangeField: ", player, field, value);
-      const action = { type: "CHANGE_FIELD", field: field, player: player, value: value }
+      const action = ChangeField({field: field, player: player, value: value });
       dispatch(action);
     },
     onChangeStage: (value) => {
-      console.log("onChangeStage: ", value);
-      const action = { type: "CHANGE_STAGE", value: value }
+      const action = ChangeStage({value: value});
       dispatch(action);
     }
   }

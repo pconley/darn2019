@@ -7,8 +7,11 @@ import { connect } from 'react-redux';
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
 
+import { IncrementRound, ChangeField, ChangeStage } from './Actions';
+
 function ReviewPage(props){
-  const { rounds } = props
+  const { players, rounds } = props
+  console.log("review page: players...",players);
   console.log("review page: rounds...",rounds);
 
   const render_round = ({item: round, index}) => {
@@ -18,8 +21,20 @@ function ReviewPage(props){
     return <Text>round {index} tricks = {round.tricks} :: {text}</Text>
   }
 
+  const render_player = ({item: player, index}) => {
+    console.log("review page: render player: player...", player);
+    return <Text>{index}: {player.name}</Text>
+  }
+
   return <View>
             <Text>Review Game:</Text>
+
+            <FlatList data={players}
+                renderItem={render_player}
+                // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
+                //extraData={round} // to force refresh!!!
+                keyExtractor={(item, index) => String(index)}
+            ></FlatList>
 
             <FlatList data={rounds}
                 renderItem={render_round}
@@ -53,25 +68,22 @@ function ReviewPage(props){
 }
 
 function mapStateToProps(state){
-  return { rounds: state.rounds }
+  return { rounds: state.game.rounds }
 }
 
 function mapDispatchToProps(dispatch){
   return { 
     onChangeField: (player, field, value) => {
-      console.log("onChangeField: ", player, field, value);
-      const action = { type: "CHANGE_FIELD", field: field, player: player, value: value }
+      const action = ChangeField({field: field, player: player, value: value });
       dispatch(action);
     },
     onChangeStage: (value) => {
-      console.log("onChangeStage: ", value);
-      const action = { type: "CHANGE_STAGE", value: value }
+      const action = ChangeStage({value: value});
       dispatch(action);
     },
     onChangeRound: (value) => {
       // TODO: note that value is not currently used
-      console.log("onChangeRound: ", value);
-      const action = { type: "INCREMENT_ROUND", value: value }
+      const action = IncrementRound({value: value});
       dispatch(action);
     }
   }

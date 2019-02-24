@@ -1,0 +1,38 @@
+
+app_data: {
+    settings: {
+
+    },
+    profile: {
+
+    },
+    stats: {},
+    players: {
+        recent: [],
+        favs: [],
+     },
+    game: { 
+        date_played: 1/1/19,
+        tricks: [3,2,1,3,5],      // number of tricks in each round 
+        players: [
+            { id: 1, name: "Fred", scores: [14,0,0,0,0] },
+            {player},{player},{player},{player},
+        ],
+        viewing_round_index: 2,   // current view (not used as yet)
+        current_round_index: 1,   // active playing round???
+        rounds: [
+            { 
+                tricks: 3,
+                dealer_id: 3,
+                total_tricks: 0, 
+                total_bids: 0, 
+                stage: BIDDING, 
+                players: [
+                    {id: 1, bid: 3, tricks: 3, score: 14 },
+                    {player}, {player}, {player}, {player}, {player}, 
+                ] 
+            },
+            {round}, {round}, {round}, {round}
+        ]
+    }
+}

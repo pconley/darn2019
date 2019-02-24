@@ -3,9 +3,9 @@ import { Text } from 'react-native';
 import { Provider } from 'react-redux'
 
 // the GAME screen controls the playing view... Bidding or Scoring
-// and passes the GameStore to those views
+// and passes the AppStore to those views
 
-import gameStore from './GameStore'
+import appStore from './AppStore'
 
 export const BIDDING = "Bidding";
 export const SCORING = "Scoring";
@@ -71,9 +71,9 @@ export default class GameScreen extends Component {
     }
 
     render() {
-      console.log("game screen: render: stage = ",this.state.stage);
+      console.log("GameScreen: render: stage = ",this.state.stage);
       const view = this._get_view(this.state.stage);
-      return <Provider store={gameStore}>{view}</Provider>
+      return <Provider store={appStore}>{view}</Provider>
     }
   }
   

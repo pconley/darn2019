@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
 
+import { ChangeField, ChangeStage } from './Actions';
+
 function ScoringPage(props){
   return <View>
             <Text>Scoring Page</Text>
@@ -35,22 +37,21 @@ function ScoringPage(props){
 
 function mapStateToProps(state){
   // NOTE: not all the state needs to map to props
-  return { round: state.rounds[state.current_round_index] }
+  const index = state.game.current_round_index;
+  const round = state.game.rounds[index];
+  return { round: round }
 }
 
 function mapDispatchToProps(dispatch){
   return { 
     onChangeField: (player, field, value) => {
-      console.log("onChangeField: ", player, field, value);
-      const action = { type: "CHANGE_FIELD", field: field, player: player, value: value }
+      const action = ChangeField({field: field, player: player, value: value });
       dispatch(action);
     },
     onChangeStage: (value) => {
-      console.log("onChangeStage: ", value);
-      const action = { type: "CHANGE_STAGE", value: value }
+      const action = ChangeStage({value: value});
       dispatch(action);
     }
-
   }
 }
 

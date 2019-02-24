@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View, Button, FlatList } from 'react-native
 
 import update from 'immutability-helper';
 
-import { initializeState } from './GameStore';
+import { initializeState } from './AppStore';
 
 export default class StartScreen extends Component {
     static navigationOptions = {
