@@ -3,7 +3,7 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
-import { ChangeField, ChangeStage } from './Actions';
+import { ChangeFieldAction, ChangeField, ChangeStage, ChangeStageAction } from './Actions';
 
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
@@ -39,12 +39,10 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return { 
     onChangeField: (player, field, value) => {
-      const action = ChangeField({field: field, player: player, value: value });
-      dispatch(action);
+      dispatch(ChangeFieldAction(player, field, value));
     },
-    onChangeStage: (value) => {
-      const action = ChangeStage({value: value});
-      dispatch(action);
+    onChangeStage: (stage) => {
+      dispatch(ChangeStageAction(stage));
     }
   }
 }

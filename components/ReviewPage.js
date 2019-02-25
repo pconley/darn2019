@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
 
-import { IncrementRound, ChangeField, ChangeStage } from './Actions';
+import { IncrementRoundAction, ChangeFieldAction, ChangeStageAction } from './Actions';
 
 function ReviewPage(props){
   const { players, rounds } = props
@@ -73,18 +73,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return { 
-    onChangeField: (player, field, value) => {
-      const action = ChangeField({field: field, player: player, value: value });
-      dispatch(action);
-    },
-    onChangeStage: (value) => {
-      const action = ChangeStage({value: value});
-      dispatch(action);
-    },
     onChangeRound: (value) => {
       // TODO: note that value is not currently used
-      const action = IncrementRound({value: value});
-      dispatch(action);
+      dispatch(IncrementRoundAction(value));
     }
   }
 }

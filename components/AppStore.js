@@ -101,12 +101,12 @@ const updateRound = (round, player) => {
 }
 
 const reducer = (state = initialState, action) => {
-    console.log("AppStore: reducer: ", action.type);
-    console.log("--- payload...", action.payload);
-    console.log("--- state...", state);
+    console.log("**** ", action.type);
+    console.log("--- starting state...", state);
+    console.log("--- action payload...", action.payload);
 
     // quick action so that the save does not get blocked by 
-    // any changes to the state structure; like miisng field
+    // any changes to the state structure; like missing field
     if(action.type === SAVE_STATE) return action.payload;
 
     // on entry the state is the current state and the payload contains
@@ -118,9 +118,6 @@ const reducer = (state = initialState, action) => {
     const round = rounds[current_round_index];
     console.log("--- round...", round);
     switch(action.type) {
-        case SAVE_STATE:
-            // save the entire state as in after a load from storage
-            return action.payload;
         case "CHANGE_FIELD":
             // changes the BID or TRICKS for a given player (in round)
             const { field, player, value } = action.payload;
@@ -143,6 +140,7 @@ const reducer = (state = initialState, action) => {
             return s_state;
             break;
         case "INCREMENT_ROUND":
+            // const { value } = action.payload;
             const c_index = current_round_index + 1;
             const c_state = update(state,{ current_round_index: {$set: c_index}});
             console.log("<<<",c_state);

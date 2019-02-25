@@ -24,7 +24,7 @@ export default class PlayerRows extends Component {
         return (
             <View key={id} style={styles.playerRow}>
               <Button title='<'
-                      onPress={() => changer(item, field,-1)} 
+                      onPress={() => changer(item,field,-1)} 
                     //   onLongPress={() => this.props.onLongPress(item, field)}
                       buttonStyle={styles.counterButtonStyle}
                       containerViewStyle={{ marginLeft: 5, marginRight: 0 }}
@@ -34,7 +34,7 @@ export default class PlayerRows extends Component {
                   containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
               />
               <Button title='>' 
-                      onPress={() => changer(item, field,+1)} 
+                      onPress={() => changer(item,field,+1)} 
                     //   onLongPress={() => this.props.onLongPress(item, field)}
                       buttonStyle={styles.counterButtonStyle}
                       containerViewStyle={{ marginLeft: 0, marginRight: 10 }}
