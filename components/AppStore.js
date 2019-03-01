@@ -42,11 +42,17 @@ const createRound = (t, n, players) => {
 
 const createGame = (tricks) => {
     console.log("game store: createGame: tricks...", tricks);
-    dealer_turn = 0;
+    dealer_turn = 0; // TODO: use reduce to eliminate the variable (for const)
     const rounds = tricks.map((t) => createRound(t, dealer_turn++, players))
+    const number_of_tricks = tricks.length;
+    const zeros = new Array(number_of_tricks).fill(0);
+    const x_players = players.map((p) => { return(
+        {id: p.id, name: p.name, scores: zeros}
+    )});
+
     const state = { 
         tricks: tricks, 
-        players: players,
+        players: x_players,
         viewing_round_index: 0,
         current_round_index: 0, 
         rounds: rounds};
