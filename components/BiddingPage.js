@@ -3,7 +3,7 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
-import { ChangeFieldAction, ChangeField, ChangeStage, ChangeStageAction } from './Actions';
+import { ChangeFieldAction, IncrementRoundAction, ChangeStageAction } from './Actions';
 
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
@@ -11,12 +11,14 @@ import PlayerRows from './PlayerRows'
 import { connect } from 'react-redux';
 
 function BiddingPage(props){
-  const { rounds, round_index } = props;
-  console.log("****bidding page: round index: ", round_index);
-  const round = rounds[round_index];
+  const { players, rounds, current_round_index } = props.game;
+  console.log("BiddingPage: players...",players);
+  console.log("BiddingPage: rounds...",rounds);
+  console.log("BiddingPage: round index: ", current_round_index);
+  const round = rounds[current_round_index];
   return <View>
             <Text>Bidding Page</Text>
-            <InfoBar round_index={round_index} round={round}/>
+            <InfoBar round_index={current_round_index} round={round}/>
             <PlayerRows round={round} field='bid' changer={props.onChangeField}/> 
             <Button title="Start Scoring" loading
               onPress={() => {
@@ -28,12 +30,21 @@ function BiddingPage(props){
               buttonStyle={button_style}
               containerStyle={{ marginTop: 20 }}
             />
+            <Button title="Previous Round"
+                onPress={() => {
+                  props.onSetStage("Reviewing") // changes the view
+                  props.onChangeRound(-1)       // changes the store
+                }}
+                titleStyle={{ fontWeight: "700" }}
+                buttonStyle={button_style}
+                containerStyle={{ marginTop: 20 }}
+              />
           </View>
 }
 
 function mapStateToProps(state){
   console.log("BiddingPage: MSTP: state...",state);
-  return { rounds: state.game.rounds }
+  return { game: state.game }
 }
 
 function mapDispatchToProps(dispatch){
@@ -43,6 +54,9 @@ function mapDispatchToProps(dispatch){
     },
     onChangeStage: (stage) => {
       dispatch(ChangeStageAction(stage));
+    },
+    onChangeRound: (value) => {
+      dispatch(IncrementRoundAction(value));
     }
   }
 }

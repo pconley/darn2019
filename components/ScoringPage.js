@@ -9,10 +9,15 @@ import PlayerRows from './PlayerRows'
 import { ChangeStageAction, ChangeFieldAction } from './Actions';
 
 function ScoringPage(props){
+  const { players, rounds, current_round_index } = props.game;
+  console.log("ScoringPage: players...",players);
+  console.log("ScoringPage: rounds...",rounds);
+  console.log("ScoringPage: round index: ", current_round_index);
+  const round = rounds[current_round_index];
   return <View>
             <Text>Scoring Page</Text>
-            <InfoBar round={props.round}/>
-            <PlayerRows round={props.round} field='tricks' changer={props.onChangeField}/> 
+            <InfoBar round_index={current_round_index} round={round}/>
+            <PlayerRows round={round} field='tricks' changer={props.onChangeField}/> 
             <Button title="Back to Bidding" loading
               onPress={() => {
                 props.onSetStage("Bidding")    // changes the view
@@ -37,15 +42,14 @@ function ScoringPage(props){
 
 function mapStateToProps(state){
   // NOTE: not all the state needs to map to props
-  const index = state.game.current_round_index;
-  const round = state.game.rounds[index];
-  return { round: round }
+  // const index = state.game.current_round_index;
+  // const round = state.game.rounds[index];
+  return { game: state.game }
 }
 
 function mapDispatchToProps(dispatch){
   return { 
     onChangeField: (player, field, value) => {
-      // const action = ChangeField({field: field, player: player, value: value });
       dispatch(ChangeFieldAction(player, field, value));
     },
     onChangeStage: (stage) => {

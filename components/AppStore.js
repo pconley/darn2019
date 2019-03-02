@@ -132,7 +132,7 @@ const reducer = (state = initialState, action) => {
             const x_rounds = update(rounds,{[current_round_index]: {$set: x_round}})
             const x_game  = update(game,{ rounds: {$set: x_rounds} });
             const x_state = update(state, {game: {$set: x_game}} )
-            console.log("<<<", x_state);
+            console.log("--> new state", x_state);
             return x_state
           break;
         case "CHANGE_STAGE":
@@ -142,14 +142,16 @@ const reducer = (state = initialState, action) => {
             const s_rounds = update(rounds,{[current_round_index]: {$set: s_round}})
             const s_game  = update(game,{ rounds: {$set: s_rounds} });
             const s_state = update(state, {game: {$set: s_game}} )
-            console.log("<<<",s_state);
+            console.log("--> new state",s_state);
             return s_state;
             break;
         case "INCREMENT_ROUND":
-            // const { value } = action.payload;
-            const c_index = current_round_index + 1;
-            const c_state = update(state,{ current_round_index: {$set: c_index}});
-            console.log("<<<",c_state);
+            const { value : increment } = action.payload;
+            // expect value is +1 or -1
+            const c_index = current_round_index + increment;
+            const c_game  = update(game,{ current_round_index: {$set: c_index} });
+            const c_state = update(state, {game: {$set: c_game}} )
+            console.log("--> new state",c_state);
             return c_state;
             break;
         default:

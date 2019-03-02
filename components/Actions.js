@@ -16,6 +16,5 @@ export function ChangeStageAction(stage) {
 }
 
 export function IncrementRoundAction(value) {
-  // TODO: note that the value is not actually used
   return { type: INCREMENT_ROUND, payload: {value: value}}
 }

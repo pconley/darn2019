@@ -15,8 +15,7 @@ function ReviewPage(props){
   console.log("ReviewPage: players...",players);
   console.log("ReviewPage: rounds...",rounds);
   console.log("ReviewPage: round index: ", current_round_index);
-
-  // const round = rounds[round_index];
+  const round = rounds[current_round_index];
 
   const render_round = ({item: round, index}) => {
     console.log("review page: render round: round...", round);
@@ -52,25 +51,21 @@ function ReviewPage(props){
 
   return <View>
     <Text>Review Page</Text>
-
+    <InfoBar round_index={current_round_index} round={round}/>
     <Text>Players:</Text>
-
     <FlatList data={players}
         renderItem={render_player}
         // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
         //extraData={round} // to force refresh!!!
         keyExtractor={(item, index) => String(index)}
     ></FlatList>
-
     <Text>Rounds:</Text>
-
     <FlatList data={rounds}
         renderItem={render_round}
         // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
         //extraData={round} // to force refresh!!!
         keyExtractor={(item, index) => String(index)}
     ></FlatList>
-
     <Button title="Back to Scoring" loading
       onPress={() => {
         props.onSetStage("Scoring")    // changes the view
@@ -81,11 +76,10 @@ function ReviewPage(props){
       buttonStyle={button_style}
       containerStyle={{ marginTop: 20 }}
     />
-
     <Button title="Next Round"
       onPress={() => {
-        props.onIncrementRound("Bidding")
-        props.onChangeRound("xxx")
+        props.onSetStage("Bidding") // changes the view
+        props.onChangeRound(+1)     // changes the store
       }}
       titleStyle={{ fontWeight: "700" }}
       buttonStyle={button_style}
@@ -101,8 +95,10 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return { 
+    onChangeStage: (stage) => {
+      dispatch(ChangeStageAction(stage));
+    },
     onChangeRound: (value) => {
-      // TODO: note that value is not currently used
       dispatch(IncrementRoundAction(value));
     }
   }

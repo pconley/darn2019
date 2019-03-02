@@ -9,14 +9,17 @@ export default class InfoBar extends Component {
 
   render() {
     const {round_index, round} = this.props;
-    console.log("info bar: round...",round);
+    const {total_bid, total_tricks, players, stage, tricks } = round;
+    // console.log("InfoBar: round...",round);
+    const bid_status = (total_bid > tricks) ? "(Overbid)" : ""
+    const take_status = (total_tricks > tricks) ? "Error!!!" : ""
     return (
         <View>
-          <Text style={styles.info_bar}>Tricks: {round.tricks}</Text>
-          <Text style={styles.info_bar}>Players: {round.players.length}</Text>
-          <Text style={styles.info_bar}>Round #{round_index} Stage: {round.stage}</Text>
-          <Text style={styles.info_bar}>Total Bid: {round.total_bid} of {round.tricks}</Text>
-          <Text style={styles.info_bar}>Tricks Taken: {round.total_tricks} of {round.tricks}</Text>
+          <Text style={styles.info_bar}>Stage: {stage}</Text>
+          <Text style={styles.info_bar}>Round: {round_index}</Text>
+          <Text style={styles.info_bar}>Players: {players.length}</Text>
+          <Text style={styles.info_bar}>Bids: {total_bid} of {tricks} {bid_status}</Text>
+          <Text style={styles.info_bar}>Tricks: {total_tricks} of {tricks}</Text>
         </View>    
     );
   }
