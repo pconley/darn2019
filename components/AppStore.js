@@ -1,10 +1,14 @@
 import { createStore } from 'redux';
-
+import * as log from 'loglevel';
 import update from 'immutability-helper';
 
 import {saveState, loadState} from './Storage';
 
-import {SAVE_STATE, saveStateAction} from "./Actions"
+import {
+    SAVE_STATE, saveStateAction,
+    CHANGE_FIELD, CHANGE_STAGE,
+    CALC_ROUND, INCREMENT_ROUND,
+} from "./Actions"
 
 // GAME Stage
 export const FORMING  = "Forming";
@@ -15,6 +19,13 @@ export const BIDDING = "Bidding";
 export const SCORING = "Scoring";
 
 const calcScore = (bid, tricks) => { return (bid === tricks) ? bid*bid+5 : -Math.max(bid,tricks); };
+
+const playersWithScores = (players) => {
+    // return a copy of players with the score (re)caclulated
+    return players.map(
+        (p) => update( p, {score : {$set: calcScore(p.bid,p.tricks)}} )
+    );
+}
 
 const players = [
     {id:1, name:'Patrick'},
@@ -79,8 +90,8 @@ const createInitialAppState = () => {
 
 const initialState = createInitialAppState();
 
-const updatePlayer = (player,field,delta,maxval=52) => {
-    console.log("AppStore: updatePlayer: change player value delta = ", delta);
+const updatePlayerWithField = (player,field,delta,maxval=52) => {
+    console.log("AppStore: updatePlayerWithField: ", field, delta);
     // WARNING: Zero means set to zero; others are increments
     const adjval = (delta === 0) ? -player[field] : delta;
     const newval = Math.min(maxval,Math.max(0,player[field]+adjval)); 
@@ -92,8 +103,8 @@ const updatePlayer = (player,field,delta,maxval=52) => {
     return z_player;
 }
 
-const updateRound = (round, player) => {
-    console.log("AppStore: updateRound: ", round, player);
+const updateRoundWithPlayer = (round, player) => {
+    console.log("AppStore: updateRoundWithPlayer: ", round, player);
     const player_index = round.players.findIndex( c => c.id === player.id );
     const x_players = update(round.players, {[player_index]: { $set: player }});
     const total_bid = x_players.reduce((sum,x) => sum+x.bid, 0 );
@@ -106,13 +117,29 @@ const updateRound = (round, player) => {
     return x_round
 }
 
-const reducer = (state = initialState, action) => {
-    console.log("**** ", action.type);
-    console.log("--- starting state...", state);
-    console.log("--- action payload...", action.payload);
+const updateRoundWithNewScores = (round) => {
+    const players = playersWithScores(round.players)
+    return update(round,{ players: {$set: players} });
+}
 
-    // quick action so that the save does not get blocked by 
-    // any changes to the state structure; like missing field
+const updateGameWithRoundAt = (game, index, round) => {
+    const rounds = update(game.rounds,{[index]: {$set: round}})
+    return update(game,{ rounds: {$set: rounds} });
+}
+
+const reducer = (state = initialState, action) => {
+    log.warn("**** ", action.type, action.payload);
+    log.debug("--> starting state...", state);
+    const x_state = get_new_state(state, action);
+    log.debug("<-- new state", x_state);
+    return x_state;
+}
+
+const get_new_state = (state, action) => {
+
+    // save is short-circuited so that the save does not get blocked
+    // by any changes to the state structure; like missing field
+    // TODO: include version concept into backup
     if(action.type === SAVE_STATE) return action.payload;
 
     // on entry the state is the current state and the payload contains
@@ -124,35 +151,39 @@ const reducer = (state = initialState, action) => {
     const round = rounds[current_round_index];
     console.log("--- round...", round);
     switch(action.type) {
-        case "CHANGE_FIELD":
+        case CHANGE_FIELD:
             // changes the BID or TRICKS for a given player (in round)
             const { field, player, value } = action.payload;
-            const x_player = updatePlayer(player, field, value);
-            const x_round  = updateRound(round, x_player);
-            const x_rounds = update(rounds,{[current_round_index]: {$set: x_round}})
-            const x_game  = update(game,{ rounds: {$set: x_rounds} });
-            const x_state = update(state, {game: {$set: x_game}} )
-            console.log("--> new state", x_state);
+            const x_player = updatePlayerWithField(player, field, value);
+            const x_round  = updateRoundWithPlayer(round, x_player);
+            const x_game   = updateGameWithRoundAt(game, current_round_index, x_round);
+            const x_state  = update(state, {game: {$set: x_game}} )
             return x_state
           break;
-        case "CHANGE_STAGE":
+        case CHANGE_STAGE:
             // changes the round stage between BIDDING and SCORING
             const { stage } =  action.payload;
             const s_round = update(round,{ stage: {$set: stage} });;
-            const s_rounds = update(rounds,{[current_round_index]: {$set: s_round}})
-            const s_game  = update(game,{ rounds: {$set: s_rounds} });
+            const s_game  = updateGameWithRoundAt(game, current_round_index, s_round);
             const s_state = update(state, {game: {$set: s_game}} )
-            console.log("--> new state",s_state);
             return s_state;
             break;
-        case "INCREMENT_ROUND":
+        case INCREMENT_ROUND:
             const { value : increment } = action.payload;
-            // expect value is +1 or -1
-            const c_index = current_round_index + increment;
+            console.assert(Math.abs(value) == 1, {value: value, msg: "must be 1 or -1"});
+            const c_index = Math.max(0,current_round_index + increment);
             const c_game  = update(game,{ current_round_index: {$set: c_index} });
             const c_state = update(state, {game: {$set: c_game}} )
-            console.log("--> new state",c_state);
             return c_state;
+            break;
+        case CALC_ROUND:
+            // this action is not necessarily on the currnent round, but
+            // it takes the index of the round to (re)calculate score
+            const { index } = action.payload;
+            const b_round = updateRoundWithNewScores(rounds[index]);
+            const b_game  = updateGameWithRoundAt(game, index, b_round);
+            const b_state = update(state, {game: {$set: b_game}} )
+            return b_state;
             break;
         default:
           return state;

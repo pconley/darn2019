@@ -6,20 +6,20 @@ import { FlatList } from 'react-native';
 export default class PlayerRows extends Component {
 
     render_row = ({item}) => {
-        console.log("player rows: render xow: item...",item);
+        // console.log("player rows: render xow: item...",item);
         const {id, bid, tricks, score} = item;
         const {round, field, changer} = this.props;
-        console.log("rount...",round);
+        // console.log("rount...",round);
         const {stage, players, dealer_id} = round;
         const dealer = players.find( c => c.id === dealer_id );
         const dealer_color = (stage === "Scoring") ? "red" : "blue";
-        console.log("dealer...",dealer);
+        // console.log("dealer...",dealer);
         const textColor = id === dealer.id ? dealer_color : "black";
 
         const tricksText = String(tricks)+"/"+String(bid);
         const valueText = (stage === "Scoring") ? tricksText : String(bid);
         const scoreText = (stage === "Scoring") ? "S: "+score : "";
-        console.log("xlayer rows: render row: state...",stage);
+        // console.log("xlayer rows: render row: state...",stage);
 
         return (
             <View key={id} style={styles.playerRow}>

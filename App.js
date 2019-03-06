@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 
+import * as log from 'loglevel';
+
+
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 
 import GameScreen    from './components/GameScreen';
@@ -68,7 +71,12 @@ export default class App extends Component {
   }
 
   render() {
-    console.log("app: render: state...", this.state);
+
+    log.setDefaultLevel("trace")
+    log.enableAll() 
+    log.setLevel(log.levels.ERROR) 
+    log.warn("App: render: state...", this.state);
+    log.info("info");
     return <AppContainer />;
   }
 }

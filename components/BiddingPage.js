@@ -3,7 +3,10 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
-import { ChangeFieldAction, IncrementRoundAction, ChangeStageAction } from './Actions';
+import { 
+  ChangeFieldAction, IncrementRoundAction, 
+  ChangeStageAction, CalculateRoundAction
+} from './Actions';
 
 import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
@@ -22,8 +25,9 @@ function BiddingPage(props){
             <PlayerRows round={round} field='bid' changer={props.onChangeField}/> 
             <Button title="Start Scoring" loading
               onPress={() => {
-                props.onSetStage("Scoring")
-                props.onChangeStage("Scoring")
+                props.onSetStage("Scoring");
+                props.calcRoundScores(current_round_index);
+                props.onChangeStage("Scoring");
               }}
               loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
               titleStyle={{ fontWeight: "700" }}
@@ -49,6 +53,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return { 
+    calcRoundScores: (index) => {
+      dispatch(CalculateRoundAction(index));
+    },
     onChangeField: (player, field, value) => {
       dispatch(ChangeFieldAction(player, field, value));
     },

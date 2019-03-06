@@ -2,8 +2,15 @@ import React, {Component} from 'react';
 import { Text } from 'react-native';
 import { Provider } from 'react-redux'
 
-// the GAME screen controls the playing view... Bidding or Scoring
+// the GAME screen controls the playing view... 
+// --- Bidding
+// --- Scoring
+// --- Reviewing
 // and passes the AppStore to those views
+
+// THERE IS STILL A "STAGE" OF THE GAME THAT IS STORED IN
+// THE APP STORE STATE... BUT NOT SURE IF THIS MAKES SENSE?
+// DOES A GAME HAVE A STAGE OR IS THAT JUST THE CURRENT VIEW
 
 import appStore from './AppStore'
 
@@ -35,16 +42,16 @@ export default class GameScreen extends Component {
     }
   
     _setStage = (stage) => {
-      console.log("game screen: set view: "+stage);
-      this.setState({ stage: stage });
+      // console.log("game screen: set view: "+stage);
+      // this.setState({ stage: stage });
     }
 
     _incrementRound = (stage) => {
-      console.log("game screen: incr round");
-      this.setState({ 
-        round_index: this.state.round_index+1,
-        stage: stage
-      });
+      // console.log("game screen: incr round");
+      // this.setState({ 
+      //   round_index: this.state.round_index+1,
+      //   stage: stage
+      // });
     }
 
     _get_view(stage){
@@ -71,8 +78,14 @@ export default class GameScreen extends Component {
     }
 
     render() {
-      console.log("GameScreen: render: stage = ",this.state.stage);
-      const view = this._get_view(this.state.stage);
+
+      const state = appStore.getState();
+      console.log("state...", state);
+      const index = state.game.current_round_index;
+      const round = state.game.rounds[index];
+
+      console.log("GameScreen: render: stage = ",round.stage);
+      const view = this._get_view(round.stage);
       return <Provider store={appStore}>{view}</Provider>
     }
   }
