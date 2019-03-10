@@ -15,18 +15,20 @@ export default class InfoBar extends Component {
     const take_status = (total_tricks > tricks) ? "Error!!!" : ""
     return (
         <View>
-          <Text style={styles.info_bar}>Stage: {stage}</Text>
-          <Text style={styles.info_bar}>Round: {round_index}</Text>
-          <Text style={styles.info_bar}>Players: {players.length}</Text>
-          <Text style={styles.info_bar}>Bids: {total_bid} of {tricks} {bid_status}</Text>
-          <Text style={styles.info_bar}>Tricks: {total_tricks} of {tricks}</Text>
+          <Text style={[styles.header, styles.info_text]}>InfoBar</Text>
+          <Text style={styles.info_text}>Stage: {stage}</Text>
+          <Text style={styles.info_text}>Round: {round_index}</Text>
+          <Text style={styles.info_text}>Players: {players.length}</Text>
+          <Text style={styles.info_text}>Bids: {total_bid} of {tricks} {bid_status}</Text>
+          <Text style={styles.info_text}>Tricks: {total_tricks} of {tricks}</Text>
         </View>    
     );
   }
 }
 
 const styles = StyleSheet.create({
-    info_bar: {
+    header: { textAlign: 'center' },
+    info_text: {
       paddingTop: 2,
       paddingLeft: 10,
       paddingRight: 10,

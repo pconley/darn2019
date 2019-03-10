@@ -59,7 +59,7 @@ export default class App extends Component {
     return fetch('https://facebook.github.io/react-native/movies.json')
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log("movies...", responseJson.movies);
+        console.log("App: did mount. movies...", responseJson.movies);
         this.setState({
           isLoading: false,
           dataSource: responseJson.movies,

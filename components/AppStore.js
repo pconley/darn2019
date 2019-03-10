@@ -118,6 +118,7 @@ const updateRoundWithPlayer = (round, player) => {
 }
 
 const updateRoundWithNewScores = (round) => {
+    console.log("updateRoundWithNewScores: round...", round)
     const players = playersWithScores(round.players)
     return update(round,{ players: {$set: players} });
 }

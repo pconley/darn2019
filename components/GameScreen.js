@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { Provider } from 'react-redux'
 
-// the GAME screen controls the playing view... 
+import InfoBar from './InfoBar'
+
+
+// the GAME screen controls the playing view.
 // --- Bidding
 // --- Scoring
 // --- Reviewing
@@ -43,50 +46,45 @@ export default class GameScreen extends Component {
   
     _setStage = (stage) => {
       // console.log("game screen: set view: "+stage);
-      // this.setState({ stage: stage });
-    }
-
-    _incrementRound = (stage) => {
-      // console.log("game screen: incr round");
-      // this.setState({ 
-      //   round_index: this.state.round_index+1,
-      //   stage: stage
-      // });
+      this.setState({ stage: stage });
     }
 
     _get_view(stage){
-      console.log("*** game screen: get view: stage = "+stage);
+      console.log("GameScreen: get view for stage = "+stage);
       switch(stage) {
         case BIDDING:
           return <BiddingPage 
-            round_index={this.state.round_index} 
+            round_index={ this.state.round_index } 
             onSetStage={ this._setStage }/>
           break;        
         case SCORING:
           return <ScoringPage 
-            roundIndex={this.state.round_index} 
+            roundIndex={ this.state.round_index } 
             onSetStage={ this._setStage } />
           break;
         case REVIEWING:
           return <ReviewPage 
-            onIncrementRound={this._incrementRound}
             onSetStage={ this._setStage } />
           break;
         default:
-          return <Text style={{paddingTop:200}}>Error in Stage: {stage}</Text>;
+          return <Text style={{paddingTop:200}}>Unknown Round Stage: {stage}</Text>;
       } 
     }
 
     render() {
-
       const state = appStore.getState();
-      console.log("state...", state);
       const index = state.game.current_round_index;
       const round = state.game.rounds[index];
 
-      console.log("GameScreen: render: stage = ",round.stage);
-      const view = this._get_view(round.stage);
-      return <Provider store={appStore}>{view}</Provider>
+      console.log("GameScreen: render stage = ",round.stage);
+      const body = this._get_view(round.stage);
+      const page = <View>
+          <Text>Text Header in GameScreen</Text>
+          <InfoBar round_index={index} round={round}/>
+          {body}
+          <Text>Text Footer in GameScreen</Text>
+        </View>
+      return <Provider store={appStore}>{page}</Provider>
     }
   }
   

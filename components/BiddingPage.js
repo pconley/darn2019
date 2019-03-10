@@ -8,8 +8,8 @@ import {
   ChangeStageAction, CalculateRoundAction
 } from './Actions';
 
-import InfoBar from './InfoBar'
 import PlayerRows from './PlayerRows'
+import {ScoringButton, PrevRoundButton, FlexedButtons} from './Buttons'
 
 import { connect } from 'react-redux';
 
@@ -20,29 +20,9 @@ function BiddingPage(props){
   console.log("BiddingPage: round index: ", current_round_index);
   const round = rounds[current_round_index];
   return <View>
-            <Text>Bidding Page</Text>
-            <InfoBar round_index={current_round_index} round={round}/>
+            <Text style={{backgroundColor: "red"}}>Bidding Page</Text>
+            {FlexedButtons(props, PrevRoundButton, ScoringButton )}
             <PlayerRows round={round} field='bid' changer={props.onChangeField}/> 
-            <Button title="Start Scoring" loading
-              onPress={() => {
-                props.onSetStage("Scoring");
-                props.calcRoundScores(current_round_index);
-                props.onChangeStage("Scoring");
-              }}
-              loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
-              titleStyle={{ fontWeight: "700" }}
-              buttonStyle={button_style}
-              containerStyle={{ marginTop: 20 }}
-            />
-            <Button title="Previous Round"
-                onPress={() => {
-                  props.onSetStage("Reviewing") // changes the view
-                  props.onChangeRound(-1)       // changes the store
-                }}
-                titleStyle={{ fontWeight: "700" }}
-                buttonStyle={button_style}
-                containerStyle={{ marginTop: 20 }}
-              />
           </View>
 }
 
@@ -69,12 +49,3 @@ function mapDispatchToProps(dispatch){
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BiddingPage);
-
-const button_style = {
-  backgroundColor: "rgba(92, 99,216, 1)",
-  width: 200,
-  height: 45,
-  borderColor: "transparent",
-  borderWidth: 0,
-  borderRadius: 5
-}

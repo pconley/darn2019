@@ -50,7 +50,8 @@ export default class PlayerRows extends Component {
     const {stage, players} = round;
     console.log("player rows2: players...",players)
     return (
-        <View style={{paddingTop:20}}>
+        <View style={{paddingTop:10, borderWidth: 9, borderColor: 'cyan'}}
+        >
           <FlatList data={players}
               renderItem={this.render_row}
               extraData={round} // to force refresh!!!

@@ -4,10 +4,9 @@ import { Button } from 'react-native-elements';
 import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
-import InfoBar from './InfoBar'
-import PlayerRows from './PlayerRows'
-
 import { IncrementRoundAction, ChangeFieldAction, ChangeStageAction } from './Actions';
+
+import {ScoringButton, NextRoundButton, FlexedButtons} from './Buttons'
 
 function ReviewPage(props){
   console.log("ReviewPage: props...",props);
@@ -50,42 +49,20 @@ function ReviewPage(props){
   get_scores(props.game, 2); // test for player with id=2
 
   return <View>
-    <Text>Review Page</Text>
-    <InfoBar round_index={current_round_index} round={round}/>
+    <Text style={{backgroundColor: "lightblue"}}>Review Page</Text>
+    {FlexedButtons(props, ScoringButton, NextRoundButton )}
     <Text>Players:</Text>
     <FlatList data={players}
         renderItem={render_player}
-        // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
         //extraData={round} // to force refresh!!!
         keyExtractor={(item, index) => String(index)}
     ></FlatList>
     <Text>Rounds:</Text>
     <FlatList data={rounds}
         renderItem={render_round}
-        // renderItem={({item, index}) => <Text>round {index} tricks = {item.tricks}</Text>}
         //extraData={round} // to force refresh!!!
         keyExtractor={(item, index) => String(index)}
     ></FlatList>
-    <Button title="Back to Scoring" loading
-      onPress={() => {
-        props.onSetStage("Scoring")    // changes the view
-        props.onChangeStage("Scoring") // changes the store
-      }}
-      loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
-      titleStyle={{ fontWeight: "700" }}
-      buttonStyle={button_style}
-      containerStyle={{ marginTop: 20 }}
-    />
-    <Button title="Next Round"
-      onPress={() => {
-        props.onSetStage("Bidding") // changes the view
-        props.onChangeRound(+1)     // changes the store
-      }}
-      titleStyle={{ fontWeight: "700" }}
-      buttonStyle={button_style}
-      containerStyle={{ marginTop: 20 }}
-    />
-
   </View>
 }
 
@@ -95,6 +72,12 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return { 
+    calcRoundScores: (index) => {
+      dispatch(CalculateRoundAction(index));
+    },
+    onChangeField: (player, field, value) => {
+      dispatch(ChangeFieldAction(player, field, value));
+    },
     onChangeStage: (stage) => {
       dispatch(ChangeStageAction(stage));
     },
@@ -105,12 +88,3 @@ function mapDispatchToProps(dispatch){
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReviewPage);
-
-const button_style = {
-  backgroundColor: "green",
-  width: 200,
-  height: 45,
-  borderColor: "transparent",
-  borderWidth: 0,
-  borderRadius: 5
-}
