@@ -25,30 +25,32 @@ function ReviewPage(props){
     return <Text>round {index} tricks = {round.tricks} :: {text}</Text>
   }
 
+
+  const get_totals = (game, player_id) => {
+    console.log("******** get_totals:", player_id);
+    // return array of the cummulative score for the given player
+    results = [];
+    total = 0;
+    game.rounds.forEach(function(round) {
+      console.log("+++round",round);
+      const p = round.players.find( (p) =>  {return p.id === player_id} )
+      console.log("+++player", p);
+      if( p && p.score !== 0 ){
+        total += p.score;
+        results.push(total)
+        console.log("player in the round", total, p)
+      }
+    });
+    return results;
+  }
+
   const render_player = ({item: player, index}) => {
     console.log("review page: render player: player...", player);
-    return <Text>{index}: {player.name}</Text>
+    const totals = get_totals(props.game, player.id);
+    console.log("***********totals", totals);
+    const text = totals.map((t) => { return t+" | " });
+    return <Text>{index}: {player.id} :: {player.name} ::: {text} </Text>
   }
-
-  const get_scores = (game, player_id) => {
-    // return array of the cummulative score for the given player
-    const index = game.players.findIndex( (p) =>  {return p.id === player_id} )
-    console.log("=== index",index);
-    console.log("=== player", game.players[index]);
-    const scores = game.players[index].scores; // incremental scores for player
-    const result = scores.reduce((a, x, i) => [...a, x + (a[i-1] || 0)], []);
-    console.log("=== scores", scores, result);
-    return result;
-  }
-
-  const transform = (players, rounds) => {
-    const x = players.map(player => { return {id: player.id, name: player.name, scores: [1,1,1]} } );
-    console.log("====", x);
-  }
-
-  transform(players, rounds);
-
-  get_scores(props.game, 2); // test for player with id=2
 
   return <View>
     <Text style={{backgroundColor: "lightblue"}}>Review Page Header</Text>

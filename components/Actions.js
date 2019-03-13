@@ -9,7 +9,6 @@ export function saveStateAction(payload) {
 }
 
 export function CalculateRoundAction(index) { 
-  console.log("******* CalculateRoundAction index=",index);
   return { type: CALC_ROUND, payload: {index: index} };
 }
 
