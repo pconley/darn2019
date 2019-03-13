@@ -14,13 +14,13 @@ export default class InfoBar extends Component {
     const bid_status = (total_bid > tricks) ? "(Overbid)" : ""
     const take_status = (total_tricks > tricks) ? "Error!!!" : ""
     return (
-        <View>
+        <View style={styles.info_bar}>
           <Text style={[styles.header, styles.info_text]}>InfoBar</Text>
-          <Text style={styles.info_text}>Stage: {stage}</Text>
-          <Text style={styles.info_text}>Round: {round_index}</Text>
+          <Text style={styles.info_text}>Stage  : {stage}</Text>
+          <Text style={styles.info_text}>Round  : {round_index}</Text>
           <Text style={styles.info_text}>Players: {players.length}</Text>
-          <Text style={styles.info_text}>Bids: {total_bid} of {tricks} {bid_status}</Text>
-          <Text style={styles.info_text}>Tricks: {total_tricks} of {tricks}</Text>
+          <Text style={styles.info_text}>Bids   : {total_bid} of {tricks} {bid_status}</Text>
+          <Text style={styles.info_text}>Tricks : {total_tricks} of {tricks} {take_status}</Text>
         </View>    
     );
   }
@@ -28,13 +28,16 @@ export default class InfoBar extends Component {
 
 const styles = StyleSheet.create({
     header: { textAlign: 'center' },
-    info_text: {
-      paddingTop: 2,
+    info_bar: {
+      backgroundColor: 'lightgray',
+      paddingTop: 10,
       paddingLeft: 10,
       paddingRight: 10,
-      paddingBottom: 2,
+      paddingBottom: 10,
+    },
+    info_text: {
       fontSize: 14,
       fontWeight: 'bold',
-      backgroundColor: 'lightgray',
+      fontFamily: 'Courier New',
     }
   })

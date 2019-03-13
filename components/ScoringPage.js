@@ -4,10 +4,11 @@ import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import PlayerRows from './PlayerRows'
-
+import { 
+  ChangeFieldAction, IncrementRoundAction, 
+  ChangeStageAction, CalculateRoundAction
+} from './Actions';
 import {BiddingButton, ReviewButton, FlexedButtons} from './Buttons'
-
-import { ChangeStageAction, ChangeFieldAction } from './Actions';
 
 function ScoringPage(props){
   console.log("ScoringPage: props...",props);
@@ -18,10 +19,11 @@ function ScoringPage(props){
   const round = rounds[current_round_index];
 
   return <View>
-          <Text style={{backgroundColor: "green"}}>Scoring Page</Text>
+          <Text style={{backgroundColor: "green"}}>Scoring Page Header</Text>
           {FlexedButtons(props, BiddingButton, ReviewButton )}
           <PlayerRows round={round} field='tricks' changer={props.onChangeField}/> 
           <View style={{height: 30, backgroundColor: 'skyblue'}} />
+          <Text style={{backgroundColor: "green"}}>Scoring Page Footer</Text>
         </View>
 }
 

@@ -4,7 +4,10 @@ import { Button } from 'react-native-elements';
 import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
-import { IncrementRoundAction, ChangeFieldAction, ChangeStageAction } from './Actions';
+import { 
+  ChangeFieldAction, IncrementRoundAction, 
+  ChangeStageAction, CalculateRoundAction
+} from './Actions';
 
 import {ScoringButton, NextRoundButton, FlexedButtons} from './Buttons'
 
@@ -18,8 +21,7 @@ function ReviewPage(props){
 
   const render_round = ({item: round, index}) => {
     console.log("review page: render round: round...", round);
-    const text = round.players.map((p) => { return p.score+"/"
-    });
+    const text = round.players.map((p) => { return p.score+"/" });
     return <Text>round {index} tricks = {round.tricks} :: {text}</Text>
   }
 
@@ -35,7 +37,7 @@ function ReviewPage(props){
     console.log("=== player", game.players[index]);
     const scores = game.players[index].scores; // incremental scores for player
     const result = scores.reduce((a, x, i) => [...a, x + (a[i-1] || 0)], []);
-    console.log("====== scores", scores, result);
+    console.log("=== scores", scores, result);
     return result;
   }
 
@@ -49,7 +51,7 @@ function ReviewPage(props){
   get_scores(props.game, 2); // test for player with id=2
 
   return <View>
-    <Text style={{backgroundColor: "lightblue"}}>Review Page</Text>
+    <Text style={{backgroundColor: "lightblue"}}>Review Page Header</Text>
     {FlexedButtons(props, ScoringButton, NextRoundButton )}
     <Text>Players:</Text>
     <FlatList data={players}
@@ -63,6 +65,7 @@ function ReviewPage(props){
         //extraData={round} // to force refresh!!!
         keyExtractor={(item, index) => String(index)}
     ></FlatList>
+    <Text style={{backgroundColor: "lightblue"}}>Review Page Footer</Text>
   </View>
 }
 

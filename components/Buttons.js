@@ -55,9 +55,7 @@ export const NextRoundButton = (props) => { return (
     </View>
 )}
 
-export const ScoringButton = (props) => { 
-    console.log("ScoringButton: props...", props);
-    
+export const ScoringButton = (props) => {     
     return (
     <View style={styles.buttonContainer}>
     <Button title="Scoring"

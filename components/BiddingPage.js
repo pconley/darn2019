@@ -20,14 +20,14 @@ function BiddingPage(props){
   console.log("BiddingPage: round index: ", current_round_index);
   const round = rounds[current_round_index];
   return <View>
-            <Text style={{backgroundColor: "red"}}>Bidding Page</Text>
+            <Text style={{backgroundColor: "red"}}>Bidding Page Header</Text>
             {FlexedButtons(props, PrevRoundButton, ScoringButton )}
             <PlayerRows round={round} field='bid' changer={props.onChangeField}/> 
+            <Text style={{backgroundColor: "red"}}>Bidding Page Footer</Text>
           </View>
 }
 
 function mapStateToProps(state){
-  console.log("BiddingPage: MSTP: state...",state);
   return { game: state.game }
 }
 

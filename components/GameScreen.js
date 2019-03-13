@@ -59,11 +59,12 @@ export default class GameScreen extends Component {
           break;        
         case SCORING:
           return <ScoringPage 
-            roundIndex={ this.state.round_index } 
+            round_index={ this.state.round_index } 
             onSetStage={ this._setStage } />
           break;
         case REVIEWING:
           return <ReviewPage 
+            round_index={ this.state.round_index }
             onSetStage={ this._setStage } />
           break;
         default:
@@ -79,10 +80,10 @@ export default class GameScreen extends Component {
       console.log("GameScreen: render stage = ",round.stage);
       const body = this._get_view(round.stage);
       const page = <View>
-          <Text>Text Header in GameScreen</Text>
+          <Text style={{backgroundColor: "orange"}}>Text Header in GameScreen</Text>
           <InfoBar round_index={index} round={round}/>
           {body}
-          <Text>Text Footer in GameScreen</Text>
+          <Text style={{backgroundColor: "orange"}}>Text Footer in GameScreen</Text>
         </View>
       return <Provider store={appStore}>{page}</Provider>
     }

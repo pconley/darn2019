@@ -178,9 +178,11 @@ const get_new_state = (state, action) => {
             return c_state;
             break;
         case CALC_ROUND:
+            console.log("calc round: rounds", rounds)
             // this action is not necessarily on the currnent round, but
             // it takes the index of the round to (re)calculate score
             const { index } = action.payload;
+            console.log("calc round: index", index)
             const b_round = updateRoundWithNewScores(rounds[index]);
             const b_game  = updateGameWithRoundAt(game, index, b_round);
             const b_state = update(state, {game: {$set: b_game}} )
